@@ -17,6 +17,7 @@ const (
 	MBTFile     MessageBlockType = "file"
 	MBTInput    MessageBlockType = "input"
 	MBTHeader   MessageBlockType = "header"
+	MBTCall     MessageBlockType = "call"
 	MBTRichText MessageBlockType = "rich_text"
 )
 
