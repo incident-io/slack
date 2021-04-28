@@ -27,6 +27,20 @@ type SlackResponse struct {
 	ResponseMetadata ResponseMetadata `json:"response_metadata"`
 }
 
+// SlackError contains both the error code, and associated messages.
+type SlackError struct {
+	Code     string
+	Messages []string
+}
+
+func (e SlackError) Error() string {
+	s := e.Code
+	if len(e.Messages) > 0 {
+		s = fmt.Sprintf("%s (%s)", s, strings.Join(e.Messages, ", "))
+	}
+	return s
+}
+
 func (t SlackResponse) Err() error {
 	if t.Ok {
 		return nil
@@ -39,7 +53,12 @@ func (t SlackResponse) Err() error {
 		return nil
 	}
 
-	return SlackErrorResponse{Err: t.Error, ResponseMetadata: t.ResponseMetadata}
+	err := SlackError{
+		Code:     t.Error,
+		Messages: t.ResponseMetadata.Messages,
+	}
+
+	return err
 }
 
 // SlackErrorResponse brings along the metadata of errors returned by the Slack API.
