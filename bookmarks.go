@@ -63,8 +63,8 @@ func (api *Client) AddBookmark(channelID string, params AddBookmarkParameters) (
 // AddBookmarkContext adds a bookmark in a channel with a custom context
 func (api *Client) AddBookmarkContext(ctx context.Context, channelID string, params AddBookmarkParameters) (Bookmark, error) {
 	values := url.Values{
-		"channel_id": {channelID},
 		"token":      {api.token},
+		"channel_id": {channelID},
 		"title":      {params.Title},
 		"type":       {params.Type},
 	}
@@ -97,6 +97,7 @@ func (api *Client) RemoveBookmark(channelID, bookmarkID string) error {
 // RemoveBookmarkContext removes a bookmark from a channel with a custom context
 func (api *Client) RemoveBookmarkContext(ctx context.Context, channelID, bookmarkID string) error {
 	values := url.Values{
+		"token":       {api.token},
 		"channel_id":  {channelID},
 		"token":       {api.token},
 		"bookmark_id": {bookmarkID},
