@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -205,7 +206,8 @@ func TestSlack_OpenView(t *testing.T) {
 			if c.expectedErr != nil && err == nil {
 				t.Fatalf("expected %s, but did not raise an error", c.expectedErr)
 			}
-			if c.expectedErr != nil && err != nil && c.expectedErr.Error() != err.Error() {
+			// HasPrefix means we ignore any additional warnings
+			if c.expectedErr != nil && err != nil && !strings.HasPrefix(err.Error(), c.expectedErr.Error()) {
 				t.Fatalf("expected %s as error but got %s\n", c.expectedErr, err)
 			}
 			if resp == nil || c.expectedResp == nil {
@@ -368,7 +370,8 @@ func TestSlack_View_PublishView(t *testing.T) {
 			if c.expectedErr != nil && err == nil {
 				t.Fatalf("expected %s, but did not raise an error", c.expectedErr)
 			}
-			if c.expectedErr != nil && err != nil && c.expectedErr.Error() != err.Error() {
+			// HasPrefix means we ignore any additional warnings
+			if c.expectedErr != nil && err != nil && !strings.HasPrefix(err.Error(), c.expectedErr.Error()) {
 				t.Fatalf("expected %s as error but got %s\n", c.expectedErr, err)
 			}
 			if resp == nil || c.expectedResp == nil {
@@ -544,7 +547,8 @@ func TestSlack_PushView(t *testing.T) {
 			if c.expectedErr != nil && err == nil {
 				t.Fatalf("expected %s, but did not raise an error", c.expectedErr)
 			}
-			if c.expectedErr != nil && err != nil && c.expectedErr.Error() != err.Error() {
+			// HasPrefix means we ignore any additional warnings
+			if c.expectedErr != nil && err != nil && !strings.HasPrefix(err.Error(), c.expectedErr.Error()) {
 				t.Fatalf("expected %s as error but got %s\n", c.expectedErr, err)
 			}
 			if resp == nil || c.expectedResp == nil {
@@ -724,7 +728,8 @@ func TestSlack_UpdateView(t *testing.T) {
 			if c.expectedErr != nil && err == nil {
 				t.Fatalf("expected %s, but did not raise an error", c.expectedErr)
 			}
-			if c.expectedErr != nil && err != nil && c.expectedErr.Error() != err.Error() {
+			// HasPrefix means we ignore any additional warnings
+			if c.expectedErr != nil && err != nil && !strings.HasPrefix(err.Error(), c.expectedErr.Error()) {
 				t.Fatalf("expected %s as error but got %s\n", c.expectedErr, err)
 			}
 			if resp == nil || c.expectedResp == nil {
