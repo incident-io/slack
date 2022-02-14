@@ -2,6 +2,7 @@ package slack
 
 import (
 	"context"
+	"errors"
 	"net/url"
 )
 
