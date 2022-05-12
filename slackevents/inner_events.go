@@ -338,7 +338,12 @@ type TeamJoinEvent struct {
 	EventTimestamp string      `json:"event_ts"`
 }
 
-// TokensRevokedEvent APP's API tokens are revoked - https://api.slack.com/events/tokens_revoked
+type UserChangeEvent struct {
+	Type string      `json:"type"`
+	User *slack.User `json:"user"`
+}
+
+// TokensRevokedEvent APP's API tokes are revoked - https://api.slack.com/events/tokens_revoked
 type TokensRevokedEvent struct {
 	Type           string `json:"type"`
 	Tokens         tokens `json:"tokens"`
@@ -599,46 +604,49 @@ const (
 	MessageMetadataUpdated = EventsAPIType("message_metadata_updated")
 	// MessageMetadataPosted A message with metadata was deleted
 	MessageMetadataDeleted = EventsAPIType("message_metadata_deleted")
+	// A user has changed
+	UserChange = "user_change"
 )
 
 // EventsAPIInnerEventMapping maps INNER Event API events to their corresponding struct
 // implementations. The structs should be instances of the unmarshalling
 // target for the matching event type.
 var EventsAPIInnerEventMapping = map[EventsAPIType]interface{}{
-	AppMention:             AppMentionEvent{},
 	AppHomeOpened:          AppHomeOpenedEvent{},
+	AppMention:             AppMentionEvent{},
 	AppUninstalled:         AppUninstalledEvent{},
+	ChannelArchive:         ChannelArchiveEvent{},
 	ChannelCreated:         ChannelCreatedEvent{},
 	ChannelDeleted:         ChannelDeletedEvent{},
-	ChannelArchive:         ChannelArchiveEvent{},
-	ChannelUnarchive:       ChannelUnarchiveEvent{},
+	ChannelIDChanged:       ChannelIDChangedEvent{},
 	ChannelLeft:            ChannelLeftEvent{},
 	ChannelRename:          ChannelRenameEvent{},
-	ChannelIDChanged:       ChannelIDChangedEvent{},
+	ChannelUnarchive:       ChannelUnarchiveEvent{},
+	EmojiChanged:           EmojiChangedEvent{},
 	FileChange:             FileChangeEvent{},
 	FileDeleted:            FileDeletedEvent{},
 	FileShared:             FileSharedEvent{},
 	FileUnshared:           FileUnsharedEvent{},
-	GroupDeleted:           GroupDeletedEvent{},
-	GroupArchive:           GroupArchiveEvent{},
-	GroupUnarchive:         GroupUnarchiveEvent{},
-	GroupLeft:              GroupLeftEvent{},
-	GroupRename:            GroupRenameEvent{},
 	GridMigrationFinished:  GridMigrationFinishedEvent{},
 	GridMigrationStarted:   GridMigrationStartedEvent{},
+	GroupArchive:           GroupArchiveEvent{},
+	GroupDeleted:           GroupDeletedEvent{},
+	GroupLeft:              GroupLeftEvent{},
+	GroupRename:            GroupRenameEvent{},
+	GroupUnarchive:         GroupUnarchiveEvent{},
 	LinkShared:             LinkSharedEvent{},
-	Message:                MessageEvent{},
 	MemberJoinedChannel:    MemberJoinedChannelEvent{},
 	MemberLeftChannel:      MemberLeftChannelEvent{},
+	Message:                MessageEvent{},
+	MessageMetadataDeleted: MessageMetadataDeletedEvent{},
+	MessageMetadataPosted:  MessageMetadataPostedEvent{},
+	MessageMetadataUpdated: MessageMetadataUpdatedEvent{},
 	PinAdded:               PinAddedEvent{},
 	PinRemoved:             PinRemovedEvent{},
 	ReactionAdded:          ReactionAddedEvent{},
 	ReactionRemoved:        ReactionRemovedEvent{},
 	TeamJoin:               TeamJoinEvent{},
 	TokensRevoked:          TokensRevokedEvent{},
-	EmojiChanged:           EmojiChangedEvent{},
+	UserChange:             UserChangeEvent{},
 	WorkflowStepExecute:    WorkflowStepExecuteEvent{},
-	MessageMetadataPosted:  MessageMetadataPostedEvent{},
-	MessageMetadataUpdated: MessageMetadataUpdatedEvent{},
-	MessageMetadataDeleted: MessageMetadataDeletedEvent{},
 }
