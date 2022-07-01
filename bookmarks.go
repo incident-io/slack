@@ -99,7 +99,6 @@ func (api *Client) RemoveBookmarkContext(ctx context.Context, channelID, bookmar
 	values := url.Values{
 		"token":       {api.token},
 		"channel_id":  {channelID},
-		"token":       {api.token},
 		"bookmark_id": {bookmarkID},
 	}
 
