@@ -130,7 +130,8 @@ func downloadFile(client httpClient, token string, downloadURL string, writer io
 }
 
 func formReq(endpoint string, values url.Values) (req *http.Request, err error) {
-	if req, err = http.NewRequest("POST", endpoint, strings.NewReader(values.Encode())); err != nil {
+	v := values.Encode()
+	if req, err = http.NewRequest("POST", endpoint, strings.NewReader(v)); err != nil {
 		return nil, err
 	}
 

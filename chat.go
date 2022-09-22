@@ -349,6 +349,13 @@ type responseURLSender struct {
 }
 
 func (t responseURLSender) BuildRequest() (*http.Request, func(*chatResponseFull) responseParser, error) {
+	metadata := make(map[string]interface{})
+	if md := t.values.Get("metadata"); md != "" {
+		err := json.Unmarshal([]byte(md), &metadata)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
 	req, err := jsonReq(t.endpoint, Msg{
 		Text:            t.values.Get("text"),
 		Timestamp:       t.values.Get("ts"),
@@ -357,6 +364,7 @@ func (t responseURLSender) BuildRequest() (*http.Request, func(*chatResponseFull
 		ResponseType:    t.responseType,
 		ReplaceOriginal: t.replaceOriginal,
 		DeleteOriginal:  t.deleteOriginal,
+		PrivateMetadata: metadata,
 	})
 	return req, func(resp *chatResponseFull) responseParser {
 		return newContentTypeParser(resp)
@@ -660,6 +668,14 @@ func MsgOptionIconURL(iconURL string) MsgOption {
 func MsgOptionIconEmoji(iconEmoji string) MsgOption {
 	return func(config *sendConfig) error {
 		config.values.Set("icon_emoji", iconEmoji)
+		return nil
+	}
+}
+
+// MsgOptionPrivateMetadata sets private metadata
+func MsgOptionPrivateMetadata(md string) MsgOption {
+	return func(config *sendConfig) error {
+		config.values.Set("metadata", md)
 		return nil
 	}
 }

@@ -131,6 +131,8 @@ type Msg struct {
 
 	// Block type Message
 	Blocks Blocks `json:"blocks,omitempty"`
+
+	PrivateMetadata map[string]interface{} `json:"metadata,omitempty"`
 }
 
 const (

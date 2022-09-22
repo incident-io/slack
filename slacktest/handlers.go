@@ -189,6 +189,18 @@ func (sts *Server) postMessageHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		m.Blocks = decodedBlocks
 	}
+	md := values.Get("private_metadata")
+	panic(md)
+	if md != "" {
+		err = json.Unmarshal([]byte(md), &m.PrivateMetadata)
+		if err != nil {
+			msg := fmt.Sprintf("Unable to decode private metadata string to json: %s", err.Error())
+			log.Printf(msg)
+			http.Error(w, msg, http.StatusInternalServerError)
+			return
+		}
+	}
+
 	jsonMessage, jsonErr := json.Marshal(m)
 	if jsonErr != nil {
 		msg := fmt.Sprintf("Unable to marshal message: %s", jsonErr.Error())
