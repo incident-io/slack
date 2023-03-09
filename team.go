@@ -182,6 +182,18 @@ func (api *Client) GetTeamProfileContext(ctx context.Context) (*TeamProfile, err
 
 }
 
+// GetEnterpriseInfo gets the Settings Information of an Enterprise
+func (api *Client) GetEnterpriseInfo() (*TeamInfo, error) {
+	values := url.Values{
+		"token": {api.token},
+	}
+	response, err := api.teamRequest(context.Background(), "admin.teams.settings.info", values)
+	if err != nil {
+		return nil, err
+	}
+	return &response.Team, nil
+}
+
 // GetAccessLogs retrieves a page of logins according to the parameters given
 func (api *Client) GetAccessLogs(params AccessLogParameters) ([]Login, *Paging, error) {
 	return api.GetAccessLogsContext(context.Background(), params)
