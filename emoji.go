@@ -33,3 +33,28 @@ func (api *Client) GetEmojiContext(ctx context.Context) (map[string]string, erro
 
 	return response.Emoji, nil
 }
+
+type AddEmojiParams struct {
+	Name string
+	URL  string
+}
+
+func (api *Client) AddEmoji(ctx context.Context, params AddEmojiParams) (map[string]string, error) {
+	values := url.Values{
+		"token": {api.token},
+		"name":  {params.Name},
+		"url":   {params.URL},
+	}
+	response := &emojiResponseFull{}
+
+	err := api.postMethod(ctx, "admin.emoji.add", values, response)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Err() != nil {
+		return nil, response.Err()
+	}
+
+	return response.Emoji, nil
+}
