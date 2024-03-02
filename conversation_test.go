@@ -35,7 +35,11 @@ var simpleChannel = `{
     "is_member": true,
     "last_read": "1401383885.000061",
     "unread_count": 0,
-    "unread_count_display": 0
+    "unread_count_display": 0,
+    "shared_team_ids": [
+        "T123",
+        "T456"
+	]
 }`
 
 func unmarshalChannel(j string) (*Channel, error) {
@@ -67,6 +71,8 @@ func assertSimpleChannel(t *testing.T, channel *Channel) {
 	assert.Equal(t, "1401383885.000061", channel.LastRead)
 	assert.Equal(t, 0, channel.UnreadCount)
 	assert.Equal(t, 0, channel.UnreadCountDisplay)
+	assert.Equal(t, "T123", channel.SharedTeamIDs[0])
+	assert.Equal(t, "T456", channel.SharedTeamIDs[1])
 }
 
 func TestCreateSimpleChannel(t *testing.T) {

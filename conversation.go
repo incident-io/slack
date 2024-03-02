@@ -32,6 +32,7 @@ type Conversation struct {
 	Priority           float64  `json:"priority"`
 	User               string   `json:"user"`
 	ConversationHostID string   `json:"conversation_host_id,omitempty"`
+	SharedTeamIDs      []string `json:"shared_team_ids,omitempty"`
 
 	// TODO support pending_shared
 }
