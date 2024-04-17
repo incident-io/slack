@@ -107,8 +107,17 @@ func TestRetryable(t *testing.T) {
 }
 
 func TestCanUseErrorsAs(t *testing.T) {
-	_ = errors.As(errors.New("error"), &RateLimitedError{})
-	_ = errors.As(errors.New("error"), &StatusCodeError{})
-	_ = errors.As(errors.New("error"), &SlackError{})
+	ok := errors.As(RateLimitedError{}, &RateLimitedError{})
+	if !ok {
+		t.Errorf("cannot convert to RateLimitedError")
+	}
+	ok = errors.As(StatusCodeError{}, &StatusCodeError{})
+	if !ok {
+		t.Errorf("cannot convert to StatusCodeError")
+	}
+	ok = errors.As(SlackError{}, &SlackError{})
+	if !ok {
+		t.Errorf("cannot convert to SlackError")
+	}
 	// no panic means we're good
 }
