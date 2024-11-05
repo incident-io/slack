@@ -25,12 +25,13 @@ type Bookmark struct {
 }
 
 type AddBookmarkParameters struct {
-	Title    string // A required title for the bookmark
-	Type     string // A required type for the bookmark
-	Link     string // URL required for type:link
-	Emoji    string // An optional emoji
-	EntityID string
-	ParentID string
+	Title     string // A required title for the bookmark
+	Type      string // A required type for the bookmark
+	Link      string // URL required for type:link
+	Emoji     string // An optional emoji
+	EntityID  string
+	ParentID  string
+	ChannelID string `json:"channel_id"`
 }
 
 type EditBookmarkParameters struct {

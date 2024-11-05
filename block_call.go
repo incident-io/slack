@@ -7,6 +7,7 @@ type CallBlock struct {
 	Type    MessageBlockType `json:"type"`
 	BlockID string           `json:"block_id,omitempty"`
 	CallID  string           `json:"call_id"`
+	Call    Call             `json:"call"`
 }
 
 // BlockType returns the type of the block
