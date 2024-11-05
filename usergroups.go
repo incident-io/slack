@@ -172,7 +172,6 @@ type GetUserGroupsParams struct {
 	IncludeCount    bool
 	IncludeDisabled bool
 	IncludeUsers    bool
-	TeamID          string
 }
 
 // GetUserGroups returns a list of user groups for the team.
