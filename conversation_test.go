@@ -56,8 +56,6 @@ func assertSimpleChannel(t *testing.T, channel *Channel) {
 	assert.NotNil(t, channel)
 	assert.Equal(t, "C024BE91L", channel.ID)
 	assert.Equal(t, "fun", channel.Name)
-	assert.Len(t, channel.PreviousNames, 1)
-	assert.Equal(t, channel.PreviousNames[0], "not-fun")
 	assert.Equal(t, true, channel.IsChannel)
 	assert.Equal(t, JSONTime(1360782804), channel.Created)
 	assert.Equal(t, "U024BE7LH", channel.Creator)

@@ -249,7 +249,7 @@ var renameConversationJSON = fmt.Sprintf(templateConversationJSON, "newName",
 	nowAsJSONTime, defaultBotID, "newName", "", "", 0, "", "", 0, 0, `"prevName"`)
 
 var inviteConversationJSON = fmt.Sprintf(templateConversationJSON, defaultConversationName,
-	nowAsJSONTime(), defaultBotID, defaultConversationName, "", "", 0, "", "", 0, 1)
+	nowAsJSONTime(), defaultBotID, defaultConversationName, "", "", 0, "", "", 0, 1, "")
 
 const inviteSharedResponseJSON = `{
     "ok": true,

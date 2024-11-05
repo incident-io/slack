@@ -139,7 +139,6 @@ func (e *RichTextList) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &raw); err != nil {
 		return err
 	}
-
 	elems := make([]RichTextElement, 0, len(raw.RawElements))
 	for _, r := range raw.RawElements {
 		var s struct {
@@ -148,7 +147,6 @@ func (e *RichTextList) UnmarshalJSON(b []byte) error {
 		if err := json.Unmarshal(r, &s); err != nil {
 			return err
 		}
-
 		var elem RichTextElement
 		switch s.Type {
 		case RTESection:
@@ -192,8 +190,7 @@ func (s RichTextSection) RichTextElementType() RichTextElementType {
 
 func (e *RichTextSection) UnmarshalJSON(b []byte) error {
 	var raw struct {
-		RawElements []json.RawMessage   `json:"elements"`
-		Type        RichTextElementType `json:"type"`
+		RawElements []json.RawMessage `json:"elements"`
 	}
 	if string(b) == "{}" {
 		return nil
@@ -244,7 +241,7 @@ func (e *RichTextSection) UnmarshalJSON(b []byte) error {
 		elems = append(elems, elem)
 	}
 	*e = RichTextSection{
-		Type:     raw.Type,
+		Type:     RTESection,
 		Elements: elems,
 	}
 	return nil
@@ -316,7 +313,7 @@ func (r RichTextSectionChannelElement) RichTextSectionElementType() RichTextSect
 
 func NewRichTextSectionChannelElement(channelID string, style *RichTextSectionTextStyle) *RichTextSectionChannelElement {
 	return &RichTextSectionChannelElement{
-		Type:      RTSEChannel,
+		Type:      RTSEText,
 		ChannelID: channelID,
 		Style:     style,
 	}
