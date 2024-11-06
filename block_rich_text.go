@@ -487,8 +487,8 @@ func (r RichTextSectionUnknownElement) RichTextSectionElementType() RichTextSect
 // RichTextQuote represents rich_text_quote element type.
 type RichTextQuote RichTextSection
 
-func NewRichTextSectionQuote(elements ...RichTextSectionElement) *RichTextSection {
-	return &RichTextSection{
+func NewRichTextSectionQuote(elements ...RichTextSectionElement) *RichTextQuote {
+	return &RichTextQuote{
 		Type:     RTEQuote,
 		Elements: elements,
 	}
@@ -520,10 +520,12 @@ type RichTextPreformatted struct {
 	Border int `json:"border"`
 }
 
-func NewRichTextSectionPreformatted(elements ...RichTextSectionElement) *RichTextSection {
-	return &RichTextSection{
-		Type:     RTEPreformatted,
-		Elements: elements,
+func NewRichTextSectionPreformatted(elements ...RichTextSectionElement) *RichTextPreformatted {
+	return &RichTextPreformatted{
+		RichTextSection: RichTextSection{
+			Type:     RTEPreformatted,
+			Elements: elements,
+		},
 	}
 }
 
