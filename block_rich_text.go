@@ -81,6 +81,11 @@ type RichTextElement interface {
 	RichTextElementType() RichTextElementType
 }
 
+type RichTextElementGenericSection interface {
+	RichTextElement
+	SectionElements() []RichTextSectionElement
+}
+
 const (
 	RTEList         RichTextElementType = "rich_text_list"
 	RTEPreformatted RichTextElementType = "rich_text_preformatted"
@@ -186,6 +191,10 @@ type RichTextSection struct {
 // RichTextElementType returns the type of the Element
 func (s RichTextSection) RichTextElementType() RichTextElementType {
 	return s.Type
+}
+
+func (s RichTextSection) SectionElements() []RichTextSectionElement {
+	return s.Elements
 }
 
 func (e *RichTextSection) UnmarshalJSON(b []byte) error {
@@ -490,6 +499,10 @@ func (s *RichTextQuote) RichTextElementType() RichTextElementType {
 	return s.Type
 }
 
+func (s RichTextQuote) SectionElements() []RichTextSectionElement {
+	return s.Elements
+}
+
 func (s *RichTextQuote) UnmarshalJSON(b []byte) error {
 	// reusing the RichTextSection struct, as it's the same as RichTextQuote.
 	var rts RichTextSection
@@ -517,6 +530,10 @@ func NewRichTextSectionPreformatted(elements ...RichTextSectionElement) *RichTex
 // RichTextElementType returns the type of the Element
 func (s *RichTextPreformatted) RichTextElementType() RichTextElementType {
 	return s.Type
+}
+
+func (s RichTextPreformatted) SectionElements() []RichTextSectionElement {
+	return s.Elements
 }
 
 func (s *RichTextPreformatted) UnmarshalJSON(b []byte) error {
