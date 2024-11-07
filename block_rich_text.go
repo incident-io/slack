@@ -2,6 +2,7 @@ package slack
 
 import (
 	"encoding/json"
+	"errors"
 )
 
 // RichTextBlock defines a new block of type rich_text.
@@ -38,14 +39,10 @@ func (e *RichTextBlock) UnmarshalJSON(b []byte) error {
 		}
 		var elem RichTextElement
 		switch s.Type {
-		case RTESection:
+		case RTESection, RTEPreformatted, RTEQuote:
 			elem = &RichTextSection{}
 		case RTEList:
 			elem = &RichTextList{}
-		case RTEQuote:
-			elem = &RichTextQuote{}
-		case RTEPreformatted:
-			elem = &RichTextPreformatted{}
 		default:
 			elems = append(elems, &RichTextUnknown{
 				Type: s.Type,
@@ -81,12 +78,6 @@ type RichTextElement interface {
 	RichTextElementType() RichTextElementType
 }
 
-type RichTextElementGenericSection interface {
-	RichTextElement
-	GetElements() []RichTextSectionElement
-	SetElements([]RichTextSectionElement)
-}
-
 const (
 	RTEList         RichTextElementType = "rich_text_list"
 	RTEPreformatted RichTextElementType = "rich_text_preformatted"
@@ -104,40 +95,52 @@ func (u RichTextUnknown) RichTextElementType() RichTextElementType {
 	return u.Type
 }
 
-type RichTextListElementType string
-
-const (
-	RTEListOrdered RichTextListElementType = "ordered"
-	RTEListBullet  RichTextListElementType = "bullet"
-)
-
-type RichTextList struct {
-	Type     RichTextElementType     `json:"type"`
-	Elements []RichTextElement       `json:"elements"`
-	Style    RichTextListElementType `json:"style"`
-	Indent   int                     `json:"indent"`
-}
-
-// NewRichTextList returns a new rich text list element.
-func NewRichTextList(style RichTextListElementType, indent int, elements ...RichTextElement) *RichTextList {
-	return &RichTextList{
-		Type:     RTEList,
+func NewRichTextSectionQuote(elements ...RichTextSectionElement) *RichTextSection {
+	return &RichTextSection{
+		Type:     RTEQuote,
 		Elements: elements,
-		Style:    style,
-		Indent:   indent,
 	}
 }
 
-// ElementType returns the type of the Element
-func (s RichTextList) RichTextElementType() RichTextElementType {
-	return s.Type
+func NewRichTextSectionPreformatted(elements ...RichTextSectionElement) *RichTextSection {
+	return &RichTextSection{
+		Type:     RTEPreformatted,
+		Elements: elements,
+	}
+}
+
+type RichTextListStyle string
+
+const (
+	RTLSBullet  RichTextListStyle = "bullet"
+	RTLSOrdered RichTextListStyle = "ordered"
+)
+
+type RichTextList struct {
+	Type     RichTextElementType `json:"type"`
+	Style    RichTextListStyle   `json:"style"`
+	Elements []RichTextSection   `json:"elements"`
+	Indent   int                 `json:"indent"`
+}
+
+func (l RichTextList) RichTextElementType() RichTextElementType {
+	return l.Type
+}
+
+func NewRichTextList(style RichTextListStyle, indentation int, elements ...RichTextSection) *RichTextList {
+	return &RichTextList{
+		Type:     RTEList,
+		Style:    style,
+		Elements: elements,
+		Indent:   indentation,
+	}
 }
 
 func (e *RichTextList) UnmarshalJSON(b []byte) error {
 	var raw struct {
-		RawElements []json.RawMessage       `json:"elements"`
-		Style       RichTextListElementType `json:"style"`
-		Indent      int                     `json:"indent"`
+		RawElements []json.RawMessage `json:"elements"`
+		Style       RichTextListStyle `json:"style"`
+		Indent      int               `json:"indent"`
 	}
 	if string(b) == "{}" {
 		return nil
@@ -145,7 +148,7 @@ func (e *RichTextList) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &raw); err != nil {
 		return err
 	}
-	elems := make([]RichTextElement, 0, len(raw.RawElements))
+	elems := make([]RichTextSection, 0, len(raw.RawElements))
 	for _, r := range raw.RawElements {
 		var s struct {
 			Type RichTextElementType `json:"type"`
@@ -153,32 +156,22 @@ func (e *RichTextList) UnmarshalJSON(b []byte) error {
 		if err := json.Unmarshal(r, &s); err != nil {
 			return err
 		}
-		var elem RichTextElement
+		var elem RichTextSection
 		switch s.Type {
 		case RTESection:
-			elem = &RichTextSection{}
-		case RTEList:
-			elem = &RichTextList{}
-		case RTEQuote:
-			elem = &RichTextQuote{}
-		case RTEPreformatted:
-			elem = &RichTextPreformatted{}
+			elem = RichTextSection{}
 		default:
-			elems = append(elems, &RichTextUnknown{
-				Type: s.Type,
-				Raw:  string(r),
-			})
-			continue
+			return errors.New("expected section in list")
 		}
-		if err := json.Unmarshal(r, elem); err != nil {
+		if err := json.Unmarshal(r, &elem); err != nil {
 			return err
 		}
 		elems = append(elems, elem)
 	}
 	*e = RichTextList{
 		Type:     RTEList,
-		Elements: elems,
 		Style:    raw.Style,
+		Elements: elems,
 		Indent:   raw.Indent,
 	}
 	return nil
@@ -189,24 +182,15 @@ type RichTextSection struct {
 	Elements []RichTextSectionElement `json:"elements"`
 }
 
-// RichTextElementType returns the type of the Element
+// ElementType returns the type of the Element
 func (s RichTextSection) RichTextElementType() RichTextElementType {
 	return s.Type
 }
 
-func (s *RichTextSection) GetElements() []RichTextSectionElement {
-	return s.Elements
-}
-
-func (s *RichTextSection) SetElements(elements []RichTextSectionElement) {
-	s.Elements = elements
-}
-
-var _ RichTextElementGenericSection = &RichTextSection{}
-
 func (e *RichTextSection) UnmarshalJSON(b []byte) error {
 	var raw struct {
-		RawElements []json.RawMessage `json:"elements"`
+		RawElements []json.RawMessage   `json:"elements"`
+		Type        RichTextElementType `json:"type"`
 	}
 	if string(b) == "{}" {
 		return nil
@@ -257,7 +241,7 @@ func (e *RichTextSection) UnmarshalJSON(b []byte) error {
 		elems = append(elems, elem)
 	}
 	*e = RichTextSection{
-		Type:     RTESection,
+		Type:     raw.Type,
 		Elements: elems,
 	}
 	return nil
@@ -329,7 +313,7 @@ func (r RichTextSectionChannelElement) RichTextSectionElementType() RichTextSect
 
 func NewRichTextSectionChannelElement(channelID string, style *RichTextSectionTextStyle) *RichTextSectionChannelElement {
 	return &RichTextSectionChannelElement{
-		Type:      RTSEText,
+		Type:      RTSEChannel,
 		ChannelID: channelID,
 		Style:     style,
 	}
@@ -356,8 +340,7 @@ func NewRichTextSectionUserElement(userID string, style *RichTextSectionTextStyl
 type RichTextSectionEmojiElement struct {
 	Type     RichTextSectionElementType `json:"type"`
 	Name     string                     `json:"name"`
-	SkinTone int                        `json:"skin_tone"`
-	Unicode  string                     `json:"unicode,omitempty"`
+	SkinTone int                        `json:"skin_tone,omitempty"`
 	Style    *RichTextSectionTextStyle  `json:"style,omitempty"`
 }
 
@@ -431,22 +414,16 @@ func NewRichTextSectionUserGroupElement(usergroupID string) *RichTextSectionUser
 type RichTextSectionDateElement struct {
 	Type      RichTextSectionElementType `json:"type"`
 	Timestamp JSONTime                   `json:"timestamp"`
-	Format    string                     `json:"format"`
-	URL       *string                    `json:"url,omitempty"`
-	Fallback  *string                    `json:"fallback,omitempty"`
 }
 
 func (r RichTextSectionDateElement) RichTextSectionElementType() RichTextSectionElementType {
 	return r.Type
 }
 
-func NewRichTextSectionDateElement(timestamp int64, format string, url *string, fallback *string) *RichTextSectionDateElement {
+func NewRichTextSectionDateElement(timestamp int64) *RichTextSectionDateElement {
 	return &RichTextSectionDateElement{
 		Type:      RTSEDate,
 		Timestamp: JSONTime(timestamp),
-		Format:    format,
-		URL:       url,
-		Fallback:  fallback,
 	}
 }
 
@@ -489,99 +466,4 @@ type RichTextSectionUnknownElement struct {
 
 func (r RichTextSectionUnknownElement) RichTextSectionElementType() RichTextSectionElementType {
 	return r.Type
-}
-
-// RichTextQuote represents rich_text_quote element type.
-type RichTextQuote RichTextSection
-
-func NewRichTextSectionQuote(elements ...RichTextSectionElement) *RichTextQuote {
-	return &RichTextQuote{
-		Type:     RTEQuote,
-		Elements: elements,
-	}
-}
-
-// RichTextElementType returns the type of the Element
-func (s *RichTextQuote) RichTextElementType() RichTextElementType {
-	return s.Type
-}
-
-func (s *RichTextQuote) GetElements() []RichTextSectionElement {
-	return s.Elements
-}
-
-func (s *RichTextQuote) SetElements(elements []RichTextSectionElement) {
-	s.Elements = elements
-}
-
-var _ RichTextElementGenericSection = &RichTextQuote{}
-
-func (s *RichTextQuote) UnmarshalJSON(b []byte) error {
-	// reusing the RichTextSection struct, as it's the same as RichTextQuote.
-	var rts RichTextSection
-	if err := json.Unmarshal(b, &rts); err != nil {
-		return err
-	}
-	*s = RichTextQuote(rts)
-	s.Type = RTEQuote
-	return nil
-}
-
-// RichTextPreformatted represents rich_text_quote element type.
-type RichTextPreformatted struct {
-	RichTextSection
-	Border int `json:"border"`
-}
-
-func NewRichTextSectionPreformatted(elements ...RichTextSectionElement) *RichTextPreformatted {
-	return &RichTextPreformatted{
-		RichTextSection: RichTextSection{
-			Type:     RTEPreformatted,
-			Elements: elements,
-		},
-	}
-}
-
-// RichTextElementType returns the type of the Element
-func (s *RichTextPreformatted) RichTextElementType() RichTextElementType {
-	return s.Type
-}
-
-func (s *RichTextPreformatted) GetElements() []RichTextSectionElement {
-	return s.Elements
-}
-
-func (s *RichTextPreformatted) SetElements(elements []RichTextSectionElement) {
-	s.Elements = elements
-}
-
-var _ RichTextElementGenericSection = &RichTextPreformatted{}
-
-func (s *RichTextPreformatted) UnmarshalJSON(b []byte) error {
-	var rts RichTextSection
-	if err := json.Unmarshal(b, &rts); err != nil {
-		return err
-	}
-	// we define standalone fields because we need to unmarshal the border
-	// field.  We can not directly unmarshal the data into
-	// RichTextPreformatted because it will cause an infinite loop.  We also
-	// can not define a struct with embedded RichTextSection and Border fields
-	// because the json package will not unmarshal the data into the
-	// standalone fields, once it sees UnmarshalJSON method on the embedded
-	// struct.  The drawback is that we have to process the data twice, and
-	// have to define a standalone struct with the same set of fields as the
-	// original struct, which may become a maintenance burden (i.e. update the
-	// fields in two places, should it ever change).
-	var standalone struct {
-		Border int `json:"border"`
-	}
-	if err := json.Unmarshal(b, &standalone); err != nil {
-		return err
-	}
-	*s = RichTextPreformatted{
-		RichTextSection: rts,
-		Border:          standalone.Border,
-	}
-	s.Type = RTEPreformatted
-	return nil
 }
