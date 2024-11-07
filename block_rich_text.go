@@ -83,7 +83,8 @@ type RichTextElement interface {
 
 type RichTextElementGenericSection interface {
 	RichTextElement
-	SectionElements() []RichTextSectionElement
+	GetElements() []RichTextSectionElement
+	SetElements([]RichTextSectionElement)
 }
 
 const (
@@ -193,9 +194,15 @@ func (s RichTextSection) RichTextElementType() RichTextElementType {
 	return s.Type
 }
 
-func (s RichTextSection) SectionElements() []RichTextSectionElement {
+func (s *RichTextSection) GetElements() []RichTextSectionElement {
 	return s.Elements
 }
+
+func (s *RichTextSection) SetElements(elements []RichTextSectionElement) {
+	s.Elements = elements
+}
+
+var _ RichTextElementGenericSection = &RichTextSection{}
 
 func (e *RichTextSection) UnmarshalJSON(b []byte) error {
 	var raw struct {
@@ -499,9 +506,15 @@ func (s *RichTextQuote) RichTextElementType() RichTextElementType {
 	return s.Type
 }
 
-func (s RichTextQuote) SectionElements() []RichTextSectionElement {
+func (s *RichTextQuote) GetElements() []RichTextSectionElement {
 	return s.Elements
 }
+
+func (s *RichTextQuote) SetElements(elements []RichTextSectionElement) {
+	s.Elements = elements
+}
+
+var _ RichTextElementGenericSection = &RichTextQuote{}
 
 func (s *RichTextQuote) UnmarshalJSON(b []byte) error {
 	// reusing the RichTextSection struct, as it's the same as RichTextQuote.
@@ -534,9 +547,15 @@ func (s *RichTextPreformatted) RichTextElementType() RichTextElementType {
 	return s.Type
 }
 
-func (s RichTextPreformatted) SectionElements() []RichTextSectionElement {
+func (s *RichTextPreformatted) GetElements() []RichTextSectionElement {
 	return s.Elements
 }
+
+func (s *RichTextPreformatted) SetElements(elements []RichTextSectionElement) {
+	s.Elements = elements
+}
+
+var _ RichTextElementGenericSection = &RichTextPreformatted{}
 
 func (s *RichTextPreformatted) UnmarshalJSON(b []byte) error {
 	var rts RichTextSection
