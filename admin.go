@@ -285,3 +285,34 @@ func (api *Client) ConversationsConvertToPublicContext(ctx context.Context, chan
 
 	return nil
 }
+
+type AdminTeam struct {
+	ID              string `json:"id"`
+	Name            string `json:"name"`
+	Discoverability string `json:"discoverability"`
+	TeamURL         string `json:"team_url"`
+}
+
+type adminListTeamsResponse struct {
+	Teams []AdminTeam `json:"teams"`
+	SlackResponse
+}
+
+// AdminListTeamsContext lists all teams on an Enterprise Grid organization.
+// https://api.slack.com/methods/admin.teams.list
+func (api *Client) AdminListTeamsContext(ctx context.Context) ([]AdminTeam, error) {
+	values := url.Values{
+		"token": {api.token},
+	}
+
+	response := &adminListTeamsResponse{}
+	err := api.postMethod(ctx, "admin.teams.list", values, response)
+	if err != nil {
+		return nil, err
+	}
+	if err := response.Err(); err != nil {
+		return nil, err
+	}
+
+	return response.Teams, nil
+}
