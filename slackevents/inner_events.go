@@ -352,12 +352,6 @@ type TeamJoinEvent struct {
 	EventTimestamp string      `json:"event_ts"`
 }
 
-// UserProfileChangeEvent happens when a user's profile changes
-type UserProfileChangeEvent struct {
-	Type string      `json:"type"`
-	User *slack.User `json:"user"`
-}
-
 // TokensRevokedEvent APP's API tokens are revoked - https://api.slack.com/events/tokens_revoked
 type TokensRevokedEvent struct {
 	Type           string `json:"type"`
