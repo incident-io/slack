@@ -232,6 +232,8 @@ func (e *RichTextSection) UnmarshalJSON(b []byte) error {
 			elem = &RichTextSectionBroadcastElement{}
 		case RTSEColor:
 			elem = &RichTextSectionColorElement{}
+		case RTSECanvas:
+			elem = &RichTextSectionCanvasElement{}
 		default:
 			elems = append(elems, &RichTextSectionUnknownElement{
 				Type: s.Type,
@@ -263,6 +265,7 @@ type RichTextSectionElementType string
 
 const (
 	RTSEBroadcast RichTextSectionElementType = "broadcast"
+	RTSECanvas    RichTextSectionElementType = "canvas"
 	RTSEChannel   RichTextSectionElementType = "channel"
 	RTSEColor     RichTextSectionElementType = "color"
 	RTSEDate      RichTextSectionElementType = "date"
@@ -460,6 +463,22 @@ func NewRichTextSectionColorElement(value string) *RichTextSectionColorElement {
 	return &RichTextSectionColorElement{
 		Type:  RTSEColor,
 		Value: value,
+	}
+}
+
+type RichTextSectionCanvasElement struct {
+	Type   RichTextSectionElementType `json:"type"`
+	FileID string                     `json:"file_id"`
+}
+
+func (r RichTextSectionCanvasElement) RichTextSectionElementType() RichTextSectionElementType {
+	return r.Type
+}
+
+func NewRichTextSectionCanvasElement(fileID string) *RichTextSectionCanvasElement {
+	return &RichTextSectionCanvasElement{
+		Type:   RTSECanvas,
+		FileID: fileID,
 	}
 }
 
