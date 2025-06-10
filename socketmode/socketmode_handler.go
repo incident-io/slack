@@ -2,7 +2,6 @@ package socketmode
 
 import (
 	"context"
-
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
