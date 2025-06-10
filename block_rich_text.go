@@ -528,6 +528,13 @@ func (s *RichTextQuote) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func NewRichTextQuote(elements ...RichTextSectionElement) *RichTextQuote {
+	return &RichTextQuote{
+		Type:     RTEQuote,
+		Elements: elements,
+	}
+}
+
 // RichTextPreformatted represents rich_text_quote element type.
 type RichTextPreformatted struct {
 	RichTextSection
@@ -566,4 +573,14 @@ func (s *RichTextPreformatted) UnmarshalJSON(b []byte) error {
 	}
 	s.Type = RTEPreformatted
 	return nil
+}
+
+func NewRichTextPreformatted(border int, elements ...RichTextSectionElement) *RichTextPreformatted {
+	return &RichTextPreformatted{
+		RichTextSection: RichTextSection{
+			Type:     RTEPreformatted,
+			Elements: elements,
+		},
+		Border: border,
+	}
 }
