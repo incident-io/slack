@@ -140,10 +140,16 @@ const (
           "some_datetime": {
             "value": {
               "type": "datetimepicker",
-              "selected_date_time": null,
-							"timezone": "Europe/Berlin"
+              "selected_date_time": null
             }
-          }
+          },
+					"some_timepicker": {
+						"value": {
+							"type": "timepicker",
+							"timezone": "Europe/Berlin",
+							"initial_time": "12:00"
+						}
+					}
 				}
 			},
 			"app_installed_team_id": "T1ABCD2E12"
@@ -307,9 +313,15 @@ func TestViewSubmissionCallback(t *testing.T) {
 					},
 					"some_datetime": {
 						"value": BlockAction{
-							Type:     "datetimepicker",
-							Timezone: "Europe/Berlin",
+							Type: "datetimepicker",
 							// No selected datetime!
+						},
+					},
+					"some_timepicker": {
+						"value": BlockAction{
+							Type:        "timepicker",
+							InitialTime: "12:00",
+							Timezone:    "Europe/Berlin",
 						},
 					},
 				},
