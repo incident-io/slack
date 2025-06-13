@@ -140,7 +140,8 @@ const (
           "some_datetime": {
             "value": {
               "type": "datetimepicker",
-              "selected_date_time": null
+              "selected_date_time": null,
+							"timezone": "Europe/Berlin"
             }
           }
 				}
@@ -306,8 +307,9 @@ func TestViewSubmissionCallback(t *testing.T) {
 					},
 					"some_datetime": {
 						"value": BlockAction{
-							Type: "datetimepicker",
-							// No value!
+							Type:     "datetimepicker",
+							Timezone: "Europe/Berlin",
+							// No selected datetime!
 						},
 					},
 				},
