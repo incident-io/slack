@@ -6,10 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/slack-go/slack/socketmode"
-
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
+	"github.com/slack-go/slack/socketmode"
 )
 
 func main() {
@@ -141,6 +140,8 @@ func main() {
 				}
 
 				client.Ack(*evt.Request, payload)
+			case socketmode.EventTypeHello:
+				client.Debugf("Hello received!")
 			default:
 				fmt.Fprintf(os.Stderr, "Unexpected event type received: %s\n", evt.Type)
 			}

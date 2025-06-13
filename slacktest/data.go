@@ -232,7 +232,7 @@ var templateConversationJSON = `
 			"creator": "%s",
 			"last_set": %d
 		},
-        "num_members": %d,
+		"num_members": %d,
 		"previous_names": [%s],
 		"priority": 0
 	}
