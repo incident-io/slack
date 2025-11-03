@@ -124,7 +124,7 @@ func (s UnknownBlockElement) ElementType() MessageElementType {
 // More Information: https://api.slack.com/reference/messaging/block-elements#image
 type ImageBlockElement struct {
 	Type      MessageElementType `json:"type"`
-	ImageURL  string             `json:"image_url"`
+	ImageURL  *string            `json:"image_url,omitempty"`
 	AltText   string             `json:"alt_text"`
 	SlackFile *SlackFileObject   `json:"slack_file,omitempty"`
 }
@@ -142,7 +142,7 @@ func (s ImageBlockElement) MixedElementType() MixedElementType {
 func NewImageBlockElement(imageURL, altText string) *ImageBlockElement {
 	return &ImageBlockElement{
 		Type:     METImage,
-		ImageURL: imageURL,
+		ImageURL: &imageURL,
 		AltText:  altText,
 	}
 }
