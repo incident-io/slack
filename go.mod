@@ -1,6 +1,6 @@
-module github.com/slack-go/slack
+module github.com/incident-io/slack
 
-go 1.16
+go 1.24.9
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
