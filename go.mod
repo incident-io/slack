@@ -3,10 +3,13 @@ module github.com/incident-io/slack
 go 1.24.9
 
 require (
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-test/deep v1.0.4
 	github.com/google/go-cmp v0.5.7
 	github.com/gorilla/websocket v1.4.2
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.2.2
+)
+
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 )
