@@ -17,9 +17,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/incident-io/slack"
-	"time"
 )
 
 func generateModalRequest() slack.ModalViewRequest {
