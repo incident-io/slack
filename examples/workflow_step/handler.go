@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/slack-go/slack"
-	"github.com/slack-go/slack/slackevents"
+	"github.com/incident-io/slack"
+	"github.com/incident-io/slack/slackevents"
 )
 
 const (
@@ -24,7 +24,7 @@ func handleMyWorkflowStep(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// see: https://github.com/slack-go/slack/blob/master/examples/eventsapi/events.go
+	// see: https://github.com/incident-io/slack/blob/master/examples/eventsapi/events.go
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

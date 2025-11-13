@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"sync"
 
-	"github.com/slack-go/slack"
+	"github.com/incident-io/slack"
 )
 
 type contextKey string

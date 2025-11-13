@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/slack-go/slack"
+	"github.com/incident-io/slack"
 )
 
 func main() {

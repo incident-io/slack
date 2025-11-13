@@ -17,9 +17,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/slack-go/slack"
 	"time"
+
+	"github.com/incident-io/slack"
 )
 
 func generateModalRequest() slack.ModalViewRequest {
@@ -86,7 +86,7 @@ func updateModal() slack.ModalViewRequest {
 }
 
 // This was taken from the slash example
-// https://github.com/slack-go/slack/blob/master/examples/slash/slash.go
+// https://github.com/incident-io/slack/blob/master/examples/slash/slash.go
 func verifySigningSecret(r *http.Request) error {
 	signingSecret := "YOUR_SIGNING_SECRET_HERE"
 	verifier, err := slack.NewSecretsVerifier(r.Header, signingSecret)
@@ -116,7 +116,7 @@ func handleSlash(w http.ResponseWriter, r *http.Request) {
 
 	err := verifySigningSecret(r)
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Printf("%s", err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -146,7 +146,7 @@ func handleModal(w http.ResponseWriter, r *http.Request) {
 
 	err := verifySigningSecret(r)
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Printf("%s", err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -154,17 +154,12 @@ func handleModal(w http.ResponseWriter, r *http.Request) {
 	var i slack.InteractionCallback
 	err = json.Unmarshal([]byte(r.FormValue("payload")), &i)
 	if err != nil {
-		fmt.Printf(err.Error())
+		fmt.Printf("%s", err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	api := slack.New("YOUR_TOKEN_HERE")
-	if err != nil {
-		fmt.Printf(err.Error())
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
 	// update modal sample
 	switch i.Type {
