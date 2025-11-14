@@ -19,6 +19,7 @@ const (
 	METFileInput       MessageElementType = "file_input"
 	METFeedbackButtons MessageElementType = "feedback_buttons"
 	METIconButton      MessageElementType = "icon_button"
+	METWorkflowButton  MessageElementType = "workflow_button"
 
 	MixedElementImage MixedElementType = "mixed_image"
 	MixedElementText  MixedElementType = "mixed_text"
@@ -60,6 +61,7 @@ type Accessory struct {
 	SelectElement              *SelectBlockElement
 	MultiSelectElement         *MultiSelectBlockElement
 	CheckboxGroupsBlockElement *CheckboxGroupsBlockElement
+	WorkflowButtonElement      *WorkflowButtonBlockElement
 	UnknownElement             *UnknownBlockElement
 }
 
@@ -88,6 +90,8 @@ func NewAccessory(element BlockElement) *Accessory {
 		return &Accessory{MultiSelectElement: element.(*MultiSelectBlockElement)}
 	case *CheckboxGroupsBlockElement:
 		return &Accessory{CheckboxGroupsBlockElement: element.(*CheckboxGroupsBlockElement)}
+	case *WorkflowButtonBlockElement:
+		return &Accessory{WorkflowButtonElement: element.(*WorkflowButtonBlockElement)}
 	default:
 		return &Accessory{UnknownElement: element.(*UnknownBlockElement)}
 	}
@@ -910,5 +914,61 @@ func (s *IconButtonBlockElement) WithAccessibilityLabel(label string) *IconButto
 // WithVisibleToUserIDs sets the user IDs who can see the icon button element
 func (s *IconButtonBlockElement) WithVisibleToUserIDs(userIDs []string) *IconButtonBlockElement {
 	s.VisibleToUserIDs = userIDs
+	return s
+}
+
+// CustomizableInputParameter defines a customizable input parameter for a workflow trigger
+type CustomizableInputParameter struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// WorkflowTrigger defines a workflow trigger for a workflow button
+type WorkflowTrigger struct {
+	URL                         string                       `json:"url"`
+	CustomizableInputParameters []CustomizableInputParameter `json:"customizable_input_parameters,omitempty"`
+}
+
+// Workflow defines a workflow for a workflow button
+type Workflow struct {
+	Trigger *WorkflowTrigger `json:"trigger"`
+}
+
+// WorkflowButtonBlockElement defines an element that triggers a workflow
+//
+// More Information: https://api.slack.com/reference/block-kit/block-elements#workflow_button
+type WorkflowButtonBlockElement struct {
+	Type               MessageElementType `json:"type"`
+	Text               *TextBlockObject   `json:"text"`
+	Workflow           *Workflow          `json:"workflow"`
+	ActionID           string             `json:"action_id,omitempty"`
+	Style              Style              `json:"style,omitempty"`
+	AccessibilityLabel string             `json:"accessibility_label,omitempty"`
+}
+
+// ElementType returns the type of the element
+func (s WorkflowButtonBlockElement) ElementType() MessageElementType {
+	return s.Type
+}
+
+// NewWorkflowButtonBlockElement returns a new instance of a workflow button element
+func NewWorkflowButtonBlockElement(text *TextBlockObject, workflow *Workflow, actionID string) *WorkflowButtonBlockElement {
+	return &WorkflowButtonBlockElement{
+		Type:     METWorkflowButton,
+		Text:     text,
+		Workflow: workflow,
+		ActionID: actionID,
+	}
+}
+
+// WithStyle adds styling to the workflow button element
+func (s *WorkflowButtonBlockElement) WithStyle(style Style) *WorkflowButtonBlockElement {
+	s.Style = style
+	return s
+}
+
+// WithAccessibilityLabel adds an accessibility label to the workflow button element
+func (s *WorkflowButtonBlockElement) WithAccessibilityLabel(label string) *WorkflowButtonBlockElement {
+	s.AccessibilityLabel = label
 	return s
 }
