@@ -9,17 +9,18 @@ package slack
 type MessageBlockType string
 
 const (
-	MBTSection  MessageBlockType = "section"
-	MBTDivider  MessageBlockType = "divider"
-	MBTImage    MessageBlockType = "image"
-	MBTAction   MessageBlockType = "actions"
-	MBTContext  MessageBlockType = "context"
-	MBTFile     MessageBlockType = "file"
-	MBTInput    MessageBlockType = "input"
-	MBTHeader   MessageBlockType = "header"
-	MBTRichText MessageBlockType = "rich_text"
-	MBTCall     MessageBlockType = "call"
-	MBTVideo    MessageBlockType = "video"
+	MBTSection        MessageBlockType = "section"
+	MBTDivider        MessageBlockType = "divider"
+	MBTImage          MessageBlockType = "image"
+	MBTAction         MessageBlockType = "actions"
+	MBTContext        MessageBlockType = "context"
+	MBTContextActions MessageBlockType = "context_actions"
+	MBTFile           MessageBlockType = "file"
+	MBTInput          MessageBlockType = "input"
+	MBTHeader         MessageBlockType = "header"
+	MBTRichText       MessageBlockType = "rich_text"
+	MBTCall           MessageBlockType = "call"
+	MBTVideo          MessageBlockType = "video"
 )
 
 // Block defines an interface all block types should implement
