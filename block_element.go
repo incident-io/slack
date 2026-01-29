@@ -237,6 +237,7 @@ type SelectBlockElement struct {
 	Filter                       *SelectBlockElementFilter `json:"filter,omitempty"`
 	MinQueryLength               *int                      `json:"min_query_length,omitempty"`
 	Confirm                      *ConfirmationBlockObject  `json:"confirm,omitempty"`
+	FocusOnLoad                  bool                      `json:"focus_on_load,omitempty"`
 }
 
 // SelectBlockElementFilter allows to filter select element conversation options by type.
@@ -327,6 +328,7 @@ type MultiSelectBlockElement struct {
 	MinQueryLength       *int                      `json:"min_query_length,omitempty"`
 	MaxSelectedItems     *int                      `json:"max_selected_items,omitempty"`
 	Confirm              *ConfirmationBlockObject  `json:"confirm,omitempty"`
+	FocusOnLoad          bool                      `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -447,6 +449,7 @@ type DatePickerBlockElement struct {
 	Placeholder *TextBlockObject         `json:"placeholder,omitempty"`
 	InitialDate string                   `json:"initial_date,omitempty"`
 	Confirm     *ConfirmationBlockObject `json:"confirm,omitempty"`
+	FocusOnLoad bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -474,6 +477,7 @@ type TimePickerBlockElement struct {
 	InitialTime string                   `json:"initial_time,omitempty"`
 	Confirm     *ConfirmationBlockObject `json:"confirm,omitempty"`
 	Timezone    string                   `json:"timezone,omitempty"`
+	FocusOnLoad bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -556,6 +560,7 @@ type PlainTextInputBlockElement struct {
 	MinLength            int                   `json:"min_length,omitempty"`
 	MaxLength            int                   `json:"max_length,omitempty"`
 	DispatchActionConfig *DispatchActionConfig `json:"dispatch_action_config,omitempty"`
+	FocusOnLoad          bool                  `json:"focus_on_load,omitempty"`
 }
 
 type DispatchActionConfig struct {
@@ -671,6 +676,7 @@ type CheckboxGroupsBlockElement struct {
 	Options        []*OptionBlockObject     `json:"options"`
 	InitialOptions []*OptionBlockObject     `json:"initial_options,omitempty"`
 	Confirm        *ConfirmationBlockObject `json:"confirm,omitempty"`
+	FocusOnLoad    bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -697,6 +703,7 @@ type RadioButtonsBlockElement struct {
 	Options       []*OptionBlockObject     `json:"options"`
 	InitialOption *OptionBlockObject       `json:"initial_option,omitempty"`
 	Confirm       *ConfirmationBlockObject `json:"confirm,omitempty"`
+	FocusOnLoad   bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
