@@ -1282,6 +1282,11 @@ const (
 	UserHuddleChanged = EventsAPIType("user_huddle_changed")
 	// UserStatusChanged is an event when a user's status changes
 	UserStatusChanged = EventsAPIType("user_status_changed")
+	// AssistantThreadStarted fires when a user opens the assistant sidebar
+	AssistantThreadStarted = EventsAPIType("assistant_thread_started")
+	// AssistantThreadContextChanged fires when a user navigates channels with
+	// the assistant sidebar open
+	AssistantThreadContextChanged = EventsAPIType("assistant_thread_context_changed")
 )
 
 // EventsAPIInnerEventMapping maps INNER Event API events to their corresponding struct
@@ -1364,4 +1369,7 @@ var EventsAPIInnerEventMapping = map[EventsAPIType]interface{}{
 	StarRemoved:                  StarRemovedEvent{},
 	UserHuddleChanged:            UserHuddleChangedEvent{},
 	UserStatusChanged:            UserStatusChangedEvent{},
+
+	AssistantThreadStarted:        AssistantThreadStartedEvent{},
+	AssistantThreadContextChanged: AssistantThreadContextChangedEvent{},
 }
