@@ -1079,6 +1079,36 @@ type UserStatusChangedEvent struct {
 	EventTS string `json:"event_ts"`
 }
 
+// EntityDetailsRequestedEvent is sent when entity details are requested
+// This event is fired when a user clicks on a Work Object link and Slack requests
+// details about the entity from your app.
+type EntityDetailsRequestedEvent struct {
+	Type         string                            `json:"type"`
+	User         string                            `json:"user"`
+	ExternalRef  EntityDetailsRequestedExternalRef `json:"external_ref"`
+	EntityURL    string                            `json:"entity_url"`
+	Link         EntityDetailsRequestedLink        `json:"link"`
+	AppUnfurlURL string                            `json:"app_unfurl_url"`
+	EventTS      string                            `json:"event_ts"`
+	TriggerID    string                            `json:"trigger_id"`
+	UserLocale   string                            `json:"user_locale"`
+	Channel      string                            `json:"channel,omitempty"`
+	MessageTs    string                            `json:"message_ts,omitempty"`
+	ThreadTs     string                            `json:"thread_ts,omitempty"`
+}
+
+// EntityDetailsRequestedExternalRef represents the external reference in entity_details_requested event
+type EntityDetailsRequestedExternalRef struct {
+	ID   string `json:"id"`
+	Type string `json:"type,omitempty"`
+}
+
+// EntityDetailsRequestedLink represents the link information in entity_details_requested event
+type EntityDetailsRequestedLink struct {
+	URL    string `json:"url"`
+	Domain string `json:"domain"`
+}
+
 type Actor struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -1282,6 +1312,8 @@ const (
 	UserHuddleChanged = EventsAPIType("user_huddle_changed")
 	// UserStatusChanged is an event when a user's status changes
 	UserStatusChanged = EventsAPIType("user_status_changed")
+	// EntityDetailsRequested is sent when entity details are requested
+	EntityDetailsRequested = EventsAPIType("entity_details_requested")
 )
 
 // EventsAPIInnerEventMapping maps INNER Event API events to their corresponding struct
@@ -1364,4 +1396,5 @@ var EventsAPIInnerEventMapping = map[EventsAPIType]interface{}{
 	StarRemoved:                  StarRemovedEvent{},
 	UserHuddleChanged:            UserHuddleChangedEvent{},
 	UserStatusChanged:            UserStatusChangedEvent{},
+	EntityDetailsRequested:       EntityDetailsRequestedEvent{},
 }
