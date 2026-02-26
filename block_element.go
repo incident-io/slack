@@ -237,6 +237,7 @@ type SelectBlockElement struct {
 	Filter                       *SelectBlockElementFilter `json:"filter,omitempty"`
 	MinQueryLength               *int                      `json:"min_query_length,omitempty"`
 	Confirm                      *ConfirmationBlockObject  `json:"confirm,omitempty"`
+	FocusOnLoad                  bool                      `json:"focus_on_load,omitempty"`
 }
 
 // SelectBlockElementFilter allows to filter select element conversation options by type.
@@ -327,6 +328,7 @@ type MultiSelectBlockElement struct {
 	MinQueryLength       *int                      `json:"min_query_length,omitempty"`
 	MaxSelectedItems     *int                      `json:"max_selected_items,omitempty"`
 	Confirm              *ConfirmationBlockObject  `json:"confirm,omitempty"`
+	FocusOnLoad          bool                      `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -556,6 +558,7 @@ type PlainTextInputBlockElement struct {
 	MinLength            int                   `json:"min_length,omitempty"`
 	MaxLength            int                   `json:"max_length,omitempty"`
 	DispatchActionConfig *DispatchActionConfig `json:"dispatch_action_config,omitempty"`
+	FocusOnLoad          bool                  `json:"focus_on_load,omitempty"`
 }
 
 type DispatchActionConfig struct {
