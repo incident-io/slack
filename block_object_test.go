@@ -24,7 +24,8 @@ func TestNewTextBlockObject(t *testing.T) {
 
 	assert.Equal(t, textObject.Type, "plain_text")
 	assert.Equal(t, textObject.Text, "test")
-	assert.True(t, textObject.Emoji, "Emoji property should be true")
+	assert.NotNil(t, textObject.Emoji, "Emoji property should not be nil")
+	assert.True(t, *textObject.Emoji, "Emoji property should be true")
 	assert.False(t, textObject.Verbatim, "Verbatim should be false")
 
 }
@@ -86,6 +87,8 @@ func TestNewOptionGroupBlockElement(t *testing.T) {
 
 }
 
+func boolPtr(b bool) *bool { return &b }
+
 func TestValidateTextBlockObject(t *testing.T) {
 	tests := []struct {
 		input    TextBlockObject
@@ -95,7 +98,7 @@ func TestValidateTextBlockObject(t *testing.T) {
 			input: TextBlockObject{
 				Type:     "plain_text",
 				Text:     "testText",
-				Emoji:    false,
+				Emoji:    boolPtr(false),
 				Verbatim: false,
 			},
 			expected: nil,
@@ -104,7 +107,6 @@ func TestValidateTextBlockObject(t *testing.T) {
 			input: TextBlockObject{
 				Type:     "mrkdwn",
 				Text:     "testText",
-				Emoji:    false,
 				Verbatim: false,
 			},
 			expected: nil,
@@ -113,7 +115,6 @@ func TestValidateTextBlockObject(t *testing.T) {
 			input: TextBlockObject{
 				Type:     "invalid",
 				Text:     "testText",
-				Emoji:    false,
 				Verbatim: false,
 			},
 			expected: errors.New("type must be either of plain_text or mrkdwn"),
@@ -122,16 +123,15 @@ func TestValidateTextBlockObject(t *testing.T) {
 			input: TextBlockObject{
 				Type:     "mrkdwn",
 				Text:     "testText",
-				Emoji:    true,
+				Emoji:    boolPtr(true),
 				Verbatim: false,
 			},
-			expected: errors.New("emoji cannot be true in mrkdown"),
+			expected: errors.New("emoji cannot be set for mrkdwn type"),
 		},
 		{
 			input: TextBlockObject{
 				Type:     "mrkdwn",
 				Text:     "",
-				Emoji:    false,
 				Verbatim: false,
 			},
 			expected: errors.New("text must have a minimum length of 1"),
@@ -140,7 +140,6 @@ func TestValidateTextBlockObject(t *testing.T) {
 			input: TextBlockObject{
 				Type:     "mrkdwn",
 				Text:     strings.Repeat("a", 3001),
-				Emoji:    false,
 				Verbatim: false,
 			},
 			expected: errors.New("text cannot be longer than 3000 characters"),

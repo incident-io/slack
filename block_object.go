@@ -122,7 +122,7 @@ func unmarshalBlockObject(r json.RawMessage, object blockObject) (blockObject, e
 type TextBlockObject struct {
 	Type     string `json:"type"`
 	Text     string `json:"text"`
-	Emoji    bool   `json:"emoji,omitempty"`
+	Emoji    *bool  `json:"emoji,omitempty"`
 	Verbatim bool   `json:"verbatim,omitempty"`
 }
 
@@ -143,8 +143,8 @@ func (s TextBlockObject) Validate() error {
 	}
 
 	// https://github.com/incident-io/slack/issues/881
-	if s.Type == "mrkdwn" && s.Emoji {
-		return errors.New("emoji cannot be true in mrkdown")
+	if s.Type == "mrkdwn" && s.Emoji != nil {
+		return errors.New("emoji cannot be set for mrkdwn type")
 	}
 
 	// https://api.slack.com/reference/block-kit/composition-objects#text__fields
@@ -161,11 +161,25 @@ func (s TextBlockObject) Validate() error {
 }
 
 // NewTextBlockObject returns an instance of a new Text Block Object
-func NewTextBlockObject(elementType, text string, emoji, verbatim bool) *TextBlockObject {
+func NewTextBlockObject(elementType, text string, emoji bool, verbatim bool) *TextBlockObject {
+	// If we're trying to build a mrkdwn object, we can't send emoji at all.
+	//
+	// So, here's the plan:
+	// 1. If the type is mrkdwn, set emoji to nil, regardless of what the user
+	//    passed in
+	// 2. Else, set emoji to the value passed in
+	var emojiPtr *bool
+
+	if elementType == "mrkdwn" {
+		emojiPtr = nil
+	} else {
+		emojiPtr = &emoji
+	}
+
 	return &TextBlockObject{
 		Type:     elementType,
 		Text:     text,
-		Emoji:    emoji,
+		Emoji:    emojiPtr,
 		Verbatim: verbatim,
 	}
 }
