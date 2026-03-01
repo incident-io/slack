@@ -144,9 +144,9 @@ func TestNewTimePickerBlockElement(t *testing.T) {
 	assert.Equal(t, timepickerElement.ActionID, "test")
 }
 
-func TestNewDatetimePickerBlockElement(t *testing.T) {
+func TestNewDateTimePickerBlockElement(t *testing.T) {
 
-	datetimepickerElement := NewDatetimePickerBlockElement("test")
+	datetimepickerElement := NewDateTimePickerBlockElement("test")
 
 	assert.Equal(t, string(datetimepickerElement.Type), "datetimepicker")
 	assert.Equal(t, datetimepickerElement.ActionID, "test")
@@ -162,9 +162,9 @@ func TestNewPlainTextInputBlockElement(t *testing.T) {
 
 }
 
-func TestNewEmailInputBlockElement(t *testing.T) {
+func TestNewEmailTextInputBlockElement(t *testing.T) {
 
-	emailInputElement := NewEmailInputBlockElement(nil, "test")
+	emailInputElement := NewEmailTextInputBlockElement(nil, "test")
 
 	assert.Equal(t, string(emailInputElement.Type), "email_text_input")
 	assert.Equal(t, emailInputElement.ActionID, "test")
@@ -176,9 +176,9 @@ func TestNewRichTextInputBlockElement(t *testing.T) {
 	assert.Equal(t, richTextInputElement.ActionID, "test")
 }
 
-func TestNewURLInputBlockElement(t *testing.T) {
+func TestNewURLTextInputBlockElement(t *testing.T) {
 
-	urlInputElement := NewURLInputBlockElement(nil, "test")
+	urlInputElement := NewURLTextInputBlockElement(nil, "test")
 
 	assert.Equal(t, string(urlInputElement.Type), "url_text_input")
 	assert.Equal(t, urlInputElement.ActionID, "test")
