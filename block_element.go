@@ -489,11 +489,11 @@ func NewTimePickerBlockElement(actionID string) *TimePickerBlockElement {
 	}
 }
 
-// DatetimePickerBlockElement defines an element which lets users easily select
+// DateTimePickerBlockElement defines an element which lets users easily select
 // a date and time from a nice UI. This element can only be used inside modals.
 //
 // More Information: https://api.slack.com/reference/block-kit/block-elements#datetimepicker
-type DatetimePickerBlockElement struct {
+type DateTimePickerBlockElement struct {
 	Type            MessageElementType       `json:"type"`
 	ActionID        string                   `json:"action_id,omitempty"`
 	InitialDateTime *JSONTime                `json:"initial_date_time,omitempty"`
@@ -502,23 +502,23 @@ type DatetimePickerBlockElement struct {
 }
 
 // ElementType returns the type of the Element
-func (s DatetimePickerBlockElement) ElementType() MessageElementType {
+func (s DateTimePickerBlockElement) ElementType() MessageElementType {
 	return s.Type
 }
 
-// NewDatetimePickerBlockElement returns an instance of a date picker element
-func NewDatetimePickerBlockElement(actionID string) *DatetimePickerBlockElement {
-	return &DatetimePickerBlockElement{
+// NewDateTimePickerBlockElement returns an instance of a date picker element
+func NewDateTimePickerBlockElement(actionID string) *DateTimePickerBlockElement {
+	return &DateTimePickerBlockElement{
 		Type:     METDatetimepicker,
 		ActionID: actionID,
 	}
 }
 
-// EmailInputBlockElement creates a field where a user can enter an email.
+// EmailTextInputBlockElement creates a field where a user can enter an email.
 // Email input elements are currently only available in modals.
 //
 // More Information: https://api.slack.com/reference/block-kit/block-elements#email
-type EmailInputBlockElement struct {
+type EmailTextInputBlockElement struct {
 	Type                 MessageElementType    `json:"type"`
 	ActionID             string                `json:"action_id,omitempty"`
 	Placeholder          *TextBlockObject      `json:"placeholder,omitempty"`
@@ -528,14 +528,14 @@ type EmailInputBlockElement struct {
 }
 
 // ElementType returns the type of the Element
-func (s EmailInputBlockElement) ElementType() MessageElementType {
+func (s EmailTextInputBlockElement) ElementType() MessageElementType {
 	return s.Type
 }
 
-// NewEmailInputBlockElement returns an instance of a plain-text input
+// NewEmailTextInputBlockElement returns an instance of a plain-text input
 // element that only accepts email addresses.
-func NewEmailInputBlockElement(placeholder *TextBlockObject, actionID string) *EmailInputBlockElement {
-	return &EmailInputBlockElement{
+func NewEmailTextInputBlockElement(placeholder *TextBlockObject, actionID string) *EmailTextInputBlockElement {
+	return &EmailTextInputBlockElement{
 		Type:        METEmailTextInput,
 		ActionID:    actionID,
 		Placeholder: placeholder,
@@ -633,11 +633,11 @@ func NewRichTextInputBlockElement(placeholder *TextBlockObject, actionID string)
 	}
 }
 
-// URLInputBlockElement creates a field where a user can enter a URL.
+// URLTextInputBlockElement creates a field where a user can enter a URL.
 // URL input elements are currently only available in modals.
 //
 // More Information: https://api.slack.com/reference/block-kit/block-elements#url
-type URLInputBlockElement struct {
+type URLTextInputBlockElement struct {
 	Type                 MessageElementType    `json:"type"`
 	ActionID             string                `json:"action_id,omitempty"`
 	Placeholder          *TextBlockObject      `json:"placeholder,omitempty"`
@@ -647,14 +647,14 @@ type URLInputBlockElement struct {
 }
 
 // ElementType returns the type of the Element
-func (s URLInputBlockElement) ElementType() MessageElementType {
+func (s URLTextInputBlockElement) ElementType() MessageElementType {
 	return s.Type
 }
 
-// NewURLInputBlockElement returns an instance of a plain-text input
+// NewURLTextInputBlockElement returns an instance of a plain-text input
 // element
-func NewURLInputBlockElement(placeholder *TextBlockObject, actionID string) *URLInputBlockElement {
-	return &URLInputBlockElement{
+func NewURLTextInputBlockElement(placeholder *TextBlockObject, actionID string) *URLTextInputBlockElement {
+	return &URLTextInputBlockElement{
 		Type:        METURLTextInput,
 		ActionID:    actionID,
 		Placeholder: placeholder,

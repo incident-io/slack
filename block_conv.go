@@ -118,15 +118,15 @@ func (b *InputBlock) UnmarshalJSON(data []byte) error {
 	case "timepicker":
 		e = &TimePickerBlockElement{}
 	case "datetimepicker":
-		e = &DatetimePickerBlockElement{}
+		e = &DateTimePickerBlockElement{}
 	case "plain_text_input":
 		e = &PlainTextInputBlockElement{}
 	case "rich_text_input":
 		e = &RichTextInputBlockElement{}
 	case "email_text_input":
-		e = &EmailInputBlockElement{}
+		e = &EmailTextInputBlockElement{}
 	case "url_text_input":
-		e = &URLInputBlockElement{}
+		e = &URLTextInputBlockElement{}
 	case "static_select", "external_select", "users_select", "conversations_select", "channels_select":
 		e = &SelectBlockElement{}
 	case "multi_static_select", "multi_external_select", "multi_users_select", "multi_conversations_select", "multi_channels_select":
@@ -208,15 +208,15 @@ func (b *BlockElements) UnmarshalJSON(data []byte) error {
 		case "timepicker":
 			blockElement = &TimePickerBlockElement{}
 		case "datetimepicker":
-			blockElement = &DatetimePickerBlockElement{}
+			blockElement = &DateTimePickerBlockElement{}
 		case "plain_text_input":
 			blockElement = &PlainTextInputBlockElement{}
 		case "rich_text_input":
 			blockElement = &RichTextInputBlockElement{}
 		case "email_text_input":
-			blockElement = &EmailInputBlockElement{}
+			blockElement = &EmailTextInputBlockElement{}
 		case "url_text_input":
-			blockElement = &URLInputBlockElement{}
+			blockElement = &URLTextInputBlockElement{}
 		case "checkboxes":
 			blockElement = &CheckboxGroupsBlockElement{}
 		case "radio_buttons":
