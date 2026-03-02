@@ -115,9 +115,9 @@ func TestCanUseErrorsAs(t *testing.T) {
 	if !ok {
 		t.Errorf("cannot convert to StatusCodeError")
 	}
-	ok = errors.As(SlackError{}, &SlackError{})
+	ok = errors.As(SlackErrorResponse{}, &SlackErrorResponse{})
 	if !ok {
-		t.Errorf("cannot convert to SlackError")
+		t.Errorf("cannot convert to SlackErrorResponse")
 	}
 	// no panic means we're good
 }
