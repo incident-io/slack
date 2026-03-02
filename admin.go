@@ -207,47 +207,48 @@ func (api *Client) SetRestrictedContext(ctx context.Context, teamName, uid strin
 	return nil
 }
 
-type adminConversationSetTeamsResponse struct {
-	Channel string `json:"channel"`
-	SlackResponse
+// AdminConversationsSetTeamsParams contains arguments for AdminConversationsSetTeams.
+type AdminConversationsSetTeamsParams struct {
+	ChannelID     string
+	OrgChannel    *bool
+	TargetTeamIDs []string
+	TeamID        *string
 }
 
-// https://api.slack.com/methods/admin.conversations.setTeams
-// Set the workspaces in an Enterprise grid org that connect to a public or private channel.
-func (api *Client) ConversationsSetTeamsContext(ctx context.Context, channelID string, orgChannel *bool, targetTeamIDs *[]string, teamID *string) error {
+// Set the workspaces in an Enterprise Grid organisation that connect to a public or
+// private channel.
+// See: https://api.slack.com/methods/admin.conversations.setTeams
+func (api *Client) AdminConversationsSetTeams(ctx context.Context, params AdminConversationsSetTeamsParams) error {
 	values := url.Values{
 		"token":      {api.token},
-		"channel_id": {channelID},
+		"channel_id": {params.ChannelID},
 	}
 
-	if orgChannel != nil {
-		values.Add("org_channel", strconv.FormatBool(*orgChannel))
+	if params.OrgChannel != nil {
+		values.Add("org_channel", strconv.FormatBool(*params.OrgChannel))
 	}
 
-	if targetTeamIDs != nil {
-		values.Add("target_team_ids", strings.Join(*targetTeamIDs, ",")) // ["T123", "T456"] - > "T123,T456"
+	if len(params.TargetTeamIDs) > 0 {
+		values.Add("target_team_ids", strings.Join(params.TargetTeamIDs, ",")) // ["T123", "T456"] - > "T123,T456"
 	}
 
-	if teamID != nil {
-		values.Add("team_id", *teamID)
+	if params.TeamID != nil {
+		values.Add("team_id", *params.TeamID)
 	}
 
-	response := &adminConversationSetTeamsResponse{}
+	response := &SlackResponse{}
 	err := api.postMethod(ctx, "admin.conversations.setTeams", values, response)
 	if err != nil {
 		return err
 	}
-	if err := response.Err(); err != nil {
-		return err
-	}
 
-	return nil
+	return response.Err()
 }
 
-// https://api.slack.com/methods/admin.conversations.convertToPrivate
-// ConversationsConvertToPrivate converts a public channel to a private channel, can only be used
-// with an enterprise org-level user scope.
-func (api *Client) ConversationsConvertToPrivateContext(ctx context.Context, channelID string) error {
+// AdminConversationsConvertToPrivate converts a public channel to a private channel.
+// To do this, you must have the admin.conversations:write scope.
+// See: https://api.slack.com/methods/admin.conversations.convertToPrivate
+func (api *Client) AdminConversationsConvertToPrivate(ctx context.Context, channelID string) error {
 	values := url.Values{
 		"token":      []string{api.token},
 		"channel_id": []string{channelID},
@@ -258,17 +259,14 @@ func (api *Client) ConversationsConvertToPrivateContext(ctx context.Context, cha
 	if err != nil {
 		return err
 	}
-	if err := response.Err(); err != nil {
-		return err
-	}
 
-	return nil
+	return response.Err()
 }
 
-// https://api.slack.com/methods/admin.conversations.convertToPrivate
-// ConversationsConvertToPublic converts a private channel to a public channel, can only be used
-// with an enterprise org-level user scope.
-func (api *Client) ConversationsConvertToPublicContext(ctx context.Context, channelID string) error {
+// AdminConversationsConvertToPublic converts a private channel to a public channel.
+// To do this, you must have the admin.conversations:write scope.
+// See: https://api.slack.com/methods/admin.conversations.convertToPublic
+func (api *Client) AdminConversationsConvertToPublic(ctx context.Context, channelID string) error {
 	values := url.Values{
 		"token":      []string{api.token},
 		"channel_id": []string{channelID},
@@ -279,9 +277,6 @@ func (api *Client) ConversationsConvertToPublicContext(ctx context.Context, chan
 	if err != nil {
 		return err
 	}
-	if err := response.Err(); err != nil {
-		return err
-	}
 
-	return nil
+	return response.Err()
 }
