@@ -2,45 +2,42 @@ package slack
 
 import (
 	"context"
-	"errors"
 	"net/url"
 )
 
 type Bookmark struct {
-	ID                  string  `json:"id"`
-	ChannelID           string  `json:"channel_id"`
-	Title               string  `json:"title"`
-	Link                string  `json:"link"`
-	Emoji               string  `json:"emoji,omitempty"`
-	IconURL             *string `json:"icon_url"`
-	Type                string  `json:"type"`
-	DateCreated         uint64  `json:"date_created"`
-	DateUpdated         uint64  `json:"date_updated"`
-	Rank                string  `json:"rank"`
-	LastUpdatedByUserID *string `json:"last_updated_by_user_id"`
-	LastUpdatedByTeamID *string `json:"last_updated_by_team_id"`
-	ShortcutID          *string `json:"shortcut_id"`
-	EntityID            *string `json:"entity_id"`
-	AppID               *string `json:"app_id"`
+	ID        string   `json:"id"`
+	ChannelID string   `json:"channel_id"`
+	Title     string   `json:"title"`
+	Link      string   `json:"link"`
+	Emoji     string   `json:"emoji"`
+	IconURL   string   `json:"icon_url"`
+	Type      string   `json:"type"`
+	Created   JSONTime `json:"date_created"`
+	Updated   JSONTime `json:"date_updated"`
+	Rank      string   `json:"rank"`
+
+	LastUpdatedByUserID string `json:"last_updated_by_user_id"`
+	LastUpdatedByTeamID string `json:"last_updated_by_team_id"`
+
+	ShortcutID string `json:"shortcut_id"`
+	EntityID   string `json:"entity_id"`
+	AppID      string `json:"app_id"`
 }
 
 type AddBookmarkParameters struct {
-	Title     string // A required title for the bookmark
-	Type      string // A required type for the bookmark
-	Link      string // URL required for type:link
-	Emoji     string // An optional emoji
-	EntityID  string
-	ParentID  string
-	ChannelID string `json:"channel_id"`
+	Title    string // A required title for the bookmark
+	Type     string // A required type for the bookmark
+	Link     string // URL required for type:link
+	Emoji    string // An optional emoji
+	EntityID string
+	ParentID string
 }
 
 type EditBookmarkParameters struct {
-	Title      *string // Change the title. Set to "" to clear
-	Emoji      *string // Change the emoji. Set to "" to clear
-	Link       string  // Change the link
-	ChannelID  string  `json:"channel_id"`
-	BookmarkID string  `json:"bookmark_id"`
-	Type       string  `json:"type,omitempty"`
+	Title *string // Change the title. Set to "" to clear
+	Emoji *string // Change the emoji. Set to "" to clear
+	Link  string  // Change the link
 }
 
 type addBookmarkResponse struct {
@@ -127,19 +124,16 @@ func (api *Client) ListBookmarks(channelID string) ([]Bookmark, error) {
 // Slack API docs: https://api.slack.com/methods/bookmarks.edit
 func (api *Client) ListBookmarksContext(ctx context.Context, channelID string) ([]Bookmark, error) {
 	values := url.Values{
-		"token":      {api.token},
 		"channel_id": {channelID},
+		"token":      {api.token},
 	}
 
-	response := &listBookmarksResponseFull{}
+	response := &listBookmarksResponse{}
 	err := api.postMethod(ctx, "bookmarks.list", values, response)
 	if err != nil {
 		return nil, err
 	}
-	if !response.Ok {
-		return nil, errors.New(response.Error)
-	}
-	return response.Bookmarks, nil
+	return response.Bookmarks, response.Err()
 }
 
 // EditBookmark edits a bookmark in a channel.
@@ -152,46 +146,24 @@ func (api *Client) EditBookmark(channelID, bookmarkID string, params EditBookmar
 // Slack API docs: https://api.slack.com/methods/bookmarks.edit
 func (api *Client) EditBookmarkContext(ctx context.Context, channelID, bookmarkID string, params EditBookmarkParameters) (Bookmark, error) {
 	values := url.Values{
+		"channel_id":  {channelID},
 		"token":       {api.token},
-		"channel_id":  {params.ChannelID},
-		"bookmark_id": {params.BookmarkID},
+		"bookmark_id": {bookmarkID},
 	}
-
-	if params.Type != "" {
-		values["type"] = []string{params.Type}
-	}
-
-	if params.Emoji != nil {
-		values["emoji"] = []string{*params.Emoji}
-	}
-
 	if params.Link != "" {
-		values["link"] = []string{params.Link}
+		values.Set("link", params.Link)
 	}
-
+	if params.Emoji != nil {
+		values.Set("emoji", *params.Emoji)
+	}
 	if params.Title != nil {
-		values["title"] = []string{*params.Title}
+		values.Set("title", *params.Title)
 	}
 
 	response := &editBookmarkResponse{}
-	err := api.postMethod(ctx, "bookmarks.edit", values, &response)
-
-	if err != nil {
-		return Bookmark{}, err
-	}
-	if err := response.Err(); err != nil {
+	if err := api.postMethod(ctx, "bookmarks.edit", values, response); err != nil {
 		return Bookmark{}, err
 	}
 
-	return response.Bookmark, nil
-}
-
-type listBookmarksResponseFull struct {
-	Bookmarks []Bookmark
-	SlackResponse
-}
-
-type singleBookmarkResponse struct {
-	Bookmark Bookmark `json:"bookmark"`
-	SlackResponse
+	return response.Bookmark, response.Err()
 }
