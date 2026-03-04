@@ -2,17 +2,31 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/incident-io/slack"
 	"github.com/incident-io/slack/slackevents"
 	"github.com/incident-io/slack/socketmode"
-	"os"
 )
 
 func main() {
+	// Get tokens from environment variables
+	botToken := os.Getenv("SLACK_BOT_TOKEN")
+	if botToken == "" {
+		fmt.Println("SLACK_BOT_TOKEN environment variable is required")
+		os.Exit(1)
+	}
+
+	appToken := os.Getenv("SLACK_APP_TOKEN")
+	if appToken == "" {
+		fmt.Println("SLACK_APP_TOKEN environment variable is required")
+		os.Exit(1)
+	}
+
 	api := slack.New(
-		os.Getenv("SLACK_BOT_TOKEN"),
+		botToken,
 		slack.OptionDebug(true),
-		slack.OptionAppLevelToken(os.Getenv("SLACK_APP_TOKEN")),
+		slack.OptionAppLevelToken(appToken),
 	)
 	client := socketmode.New(api, socketmode.OptionDebug(true))
 
@@ -38,7 +52,7 @@ func main() {
 						if callbackID == "sample_function" {
 							userId := ev.Inputs["user_id"]
 							payload := map[string]string{
-								"user_id": userId,
+								"user_id": userId.(string),
 							}
 
 							err := api.FunctionCompleteSuccess(ev.FunctionExecutionID, slack.FunctionCompleteSuccessRequestOptionOutput(payload))
