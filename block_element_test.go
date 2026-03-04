@@ -8,13 +8,11 @@ import (
 )
 
 func TestNewImageBlockElement(t *testing.T) {
-
 	imageElement := NewImageBlockElement("https://api.slack.com/img/blocks/bkb_template_images/tripAgentLocationMarker.png", "Location Pin Icon")
 
 	assert.Equal(t, string(imageElement.Type), "image")
 	assert.Contains(t, *imageElement.ImageURL, "tripAgentLocationMarker")
 	assert.Equal(t, imageElement.AltText, "Location Pin Icon")
-
 }
 
 func TestNewImageBlockElementSlackFile(t *testing.T) {
@@ -28,7 +26,6 @@ func TestNewImageBlockElementSlackFile(t *testing.T) {
 }
 
 func TestNewButtonBlockElement(t *testing.T) {
-
 	btnTxt := NewTextBlockObject("plain_text", "Next 2 Results", false, false)
 	btnElement := NewButtonBlockElement("test", "click_me_123", btnTxt)
 
@@ -36,11 +33,9 @@ func TestNewButtonBlockElement(t *testing.T) {
 	assert.Equal(t, btnElement.ActionID, "test")
 	assert.Equal(t, btnElement.Value, "click_me_123")
 	assert.Equal(t, btnElement.Text.Text, "Next 2 Results")
-
 }
 
 func TestWithStyleForButtonElement(t *testing.T) {
-
 	// these values are irrelevant in this test
 	btnTxt := NewTextBlockObject("plain_text", "Next 2 Results", false, false)
 	btnElement := NewButtonBlockElement("test", "click_me_123", btnTxt)
@@ -51,21 +46,17 @@ func TestWithStyleForButtonElement(t *testing.T) {
 	assert.Equal(t, btnElement.Style, Style("primary"))
 	btnElement.WithStyle(StyleDanger)
 	assert.Equal(t, btnElement.Style, Style("danger"))
-
 }
 
 func TestWithURLForButtonElement(t *testing.T) {
-
 	btnTxt := NewTextBlockObject("plain_text", "Next 2 Results", false, false)
 	btnElement := NewButtonBlockElement("test", "click_me_123", btnTxt)
 
 	btnElement.WithURL("https://foo.bar")
 	assert.Equal(t, btnElement.URL, "https://foo.bar")
-
 }
 
 func TestNewOptionsSelectBlockElement(t *testing.T) {
-
 	testOptionText := NewTextBlockObject("plain_text", "Option One", false, false)
 	testOption := NewOptionBlockObject("test", testOptionText, nil)
 
@@ -73,11 +64,9 @@ func TestNewOptionsSelectBlockElement(t *testing.T) {
 	assert.Equal(t, option.Type, "static_select")
 	assert.Equal(t, len(option.Options), 1)
 	assert.Nil(t, option.OptionGroups)
-
 }
 
 func TestNewOptionsGroupSelectBlockElement(t *testing.T) {
-
 	testOptionText := NewTextBlockObject("plain_text", "Option One", false, false)
 	testOption := NewOptionBlockObject("test", testOptionText, nil)
 	testLabel := NewTextBlockObject("plain_text", "Test Label", false, false)
@@ -88,11 +77,9 @@ func TestNewOptionsGroupSelectBlockElement(t *testing.T) {
 	assert.Equal(t, optGroup.Type, "static_select")
 	assert.Equal(t, optGroup.ActionID, "test")
 	assert.Equal(t, len(optGroup.OptionGroups), 1)
-
 }
 
 func TestNewOptionsMultiSelectBlockElement(t *testing.T) {
-
 	testOptionText := NewTextBlockObject("plain_text", "Option One", false, false)
 	testDescriptionText := NewTextBlockObject("plain_text", "Description One", false, false)
 	testOption := NewOptionBlockObject("test", testOptionText, testDescriptionText)
@@ -101,7 +88,6 @@ func TestNewOptionsMultiSelectBlockElement(t *testing.T) {
 	assert.Equal(t, option.Type, "static_select")
 	assert.Equal(t, len(option.Options), 1)
 	assert.Nil(t, option.OptionGroups)
-
 }
 
 func TestNewOptionsGroupMultiSelectBlockElement(t *testing.T) {
@@ -155,12 +141,9 @@ func TestNewTimePickerBlockElement(t *testing.T) {
 }
 
 func TestNewDateTimePickerBlockElement(t *testing.T) {
-
 	datetimepickerElement := NewDateTimePickerBlockElement("test")
-
 	assert.Equal(t, string(datetimepickerElement.Type), "datetimepicker")
 	assert.Equal(t, datetimepickerElement.ActionID, "test")
-
 }
 
 func TestNewPlainTextInputBlockElement(t *testing.T) {
@@ -172,27 +155,24 @@ func TestNewPlainTextInputBlockElement(t *testing.T) {
 
 }
 
-func TestNewEmailTextInputBlockElement(t *testing.T) {
-
-	emailInputElement := NewEmailTextInputBlockElement(nil, "test")
-
-	assert.Equal(t, string(emailInputElement.Type), "email_text_input")
-	assert.Equal(t, emailInputElement.ActionID, "test")
-}
-
 func TestNewRichTextInputBlockElement(t *testing.T) {
 	richTextInputElement := NewRichTextInputBlockElement(nil, "test")
 	assert.Equal(t, string(richTextInputElement.Type), "rich_text_input")
 	assert.Equal(t, richTextInputElement.ActionID, "test")
 }
 
+func TestNewEmailTextInputBlockElement(t *testing.T) {
+	emailTextInputElement := NewEmailTextInputBlockElement(nil, "example@example.com")
+
+	assert.Equal(t, string(emailTextInputElement.Type), "email_text_input")
+	assert.Equal(t, emailTextInputElement.ActionID, "example@example.com")
+}
+
 func TestNewURLTextInputBlockElement(t *testing.T) {
+	urlTextInputElement := NewURLTextInputBlockElement(nil, "www.example.com")
 
-	urlInputElement := NewURLTextInputBlockElement(nil, "test")
-
-	assert.Equal(t, string(urlInputElement.Type), "url_text_input")
-	assert.Equal(t, urlInputElement.ActionID, "test")
-
+	assert.Equal(t, string(urlTextInputElement.Type), "url_text_input")
+	assert.Equal(t, urlTextInputElement.ActionID, "www.example.com")
 }
 
 func TestNewCheckboxGroupsBlockElement(t *testing.T) {
@@ -386,97 +366,110 @@ func TestNewWorkflowButtonBlockElement(t *testing.T) {
 	btnText := NewTextBlockObject("plain_text", "Run Workflow", false, false)
 	workflow := &Workflow{
 		Trigger: &WorkflowTrigger{
-			URL: "https://slack.com/shortcuts/Ft0123ABC456/xyz123",
+			URL: "https://slack.com/shortcuts/Ft123456/xyz123",
 			CustomizableInputParameters: []CustomizableInputParameter{
-				{
-					Name:  "input_parameter_a",
-					Value: "value_a",
-				},
+				{Name: "input_param_a", Value: "Value for input param A"},
+				{Name: "input_param_b", Value: "Value for input param B"},
 			},
 		},
 	}
+	workflowButton := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_action_1")
 
-	workflowBtn := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_button_click")
-
-	assert.Equal(t, string(workflowBtn.Type), "workflow_button")
-	assert.Equal(t, workflowBtn.ActionID, "workflow_button_click")
-	assert.Equal(t, workflowBtn.Text.Text, "Run Workflow")
-	assert.Equal(t, workflowBtn.Workflow.Trigger.URL, "https://slack.com/shortcuts/Ft0123ABC456/xyz123")
-	assert.Equal(t, len(workflowBtn.Workflow.Trigger.CustomizableInputParameters), 1)
-	assert.Equal(t, workflowBtn.Workflow.Trigger.CustomizableInputParameters[0].Name, "input_parameter_a")
-	assert.Equal(t, workflowBtn.Workflow.Trigger.CustomizableInputParameters[0].Value, "value_a")
+	assert.Equal(t, string(workflowButton.Type), "workflow_button")
+	assert.Equal(t, "workflow_action_1", workflowButton.ActionID)
+	assert.Equal(t, "Run Workflow", workflowButton.Text.Text)
+	assert.NotNil(t, workflowButton.Workflow)
+	assert.Equal(t, "https://slack.com/shortcuts/Ft123456/xyz123", workflowButton.Workflow.Trigger.URL)
+	assert.Equal(t, 2, len(workflowButton.Workflow.Trigger.CustomizableInputParameters))
+	assert.Equal(t, "input_param_a", workflowButton.Workflow.Trigger.CustomizableInputParameters[0].Name)
+	assert.Equal(t, "Value for input param A", workflowButton.Workflow.Trigger.CustomizableInputParameters[0].Value)
 }
 
-func TestWorkflowButtonBlockElementWithStyle(t *testing.T) {
-	btnText := NewTextBlockObject("plain_text", "Run Workflow", false, false)
+func TestWorkflowButtonFluentMethods(t *testing.T) {
+	btnText := NewTextBlockObject("plain_text", "Execute", false, false)
 	workflow := &Workflow{
 		Trigger: &WorkflowTrigger{
-			URL: "https://slack.com/shortcuts/Ft0123ABC456/xyz123",
+			URL: "https://slack.com/shortcuts/Ft123456/xyz123",
 		},
 	}
+	workflowButton := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_1")
 
-	workflowBtn := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_button_click")
+	// Test WithStyle
+	workflowButton.WithStyle(StylePrimary)
+	assert.Equal(t, StylePrimary, workflowButton.Style)
 
-	// Test style methods
-	workflowBtn.WithStyle(StyleDefault)
-	assert.Equal(t, workflowBtn.Style, Style(""))
+	workflowButton.WithStyle(StyleDanger)
+	assert.Equal(t, StyleDanger, workflowButton.Style)
 
-	workflowBtn.WithStyle(StylePrimary)
-	assert.Equal(t, workflowBtn.Style, Style("primary"))
+	// Test WithAccessibilityLabel
+	workflowButton.WithAccessibilityLabel("This button triggers an important workflow")
+	assert.Equal(t, "This button triggers an important workflow", workflowButton.AccessibilityLabel)
 
-	workflowBtn.WithStyle(StyleDanger)
-	assert.Equal(t, workflowBtn.Style, Style("danger"))
+	// Test method chaining
+	chainedButton := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_2").
+		WithStyle(StylePrimary).
+		WithAccessibilityLabel("Chained accessibility label")
+
+	assert.Equal(t, StylePrimary, chainedButton.Style)
+	assert.Equal(t, "Chained accessibility label", chainedButton.AccessibilityLabel)
 }
 
-func TestWorkflowButtonBlockElementWithAccessibilityLabel(t *testing.T) {
-	btnText := NewTextBlockObject("plain_text", "Run Workflow", false, false)
+func TestWorkflowButtonJSONMarshalling(t *testing.T) {
+	btnText := NewTextBlockObject("plain_text", "Start Process", false, false)
 	workflow := &Workflow{
 		Trigger: &WorkflowTrigger{
-			URL: "https://slack.com/shortcuts/Ft0123ABC456/xyz123",
-		},
-	}
-
-	workflowBtn := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_button_click")
-	workflowBtn.WithAccessibilityLabel("Click to run the workflow")
-
-	assert.Equal(t, workflowBtn.AccessibilityLabel, "Click to run the workflow")
-}
-
-func TestWorkflowButtonBlockElementJSONMarshaling(t *testing.T) {
-	btnText := NewTextBlockObject("plain_text", "Run Workflow", false, false)
-	workflow := &Workflow{
-		Trigger: &WorkflowTrigger{
-			URL: "https://slack.com/shortcuts/Ft0123ABC456/xyz123",
+			URL: "https://slack.com/shortcuts/Ft123456/abc789",
 			CustomizableInputParameters: []CustomizableInputParameter{
-				{
-					Name:  "param1",
-					Value: "value1",
-				},
-				{
-					Name:  "param2",
-					Value: "value2",
-				},
+				{Name: "user_id", Value: "U123456"},
+				{Name: "channel_id", Value: "C789012"},
 			},
 		},
 	}
+	workflowButton := NewWorkflowButtonBlockElement(btnText, workflow, "start_workflow").
+		WithStyle(StylePrimary).
+		WithAccessibilityLabel("Start the approval process")
 
-	workflowBtn := NewWorkflowButtonBlockElement(btnText, workflow, "workflow_button_click")
-	workflowBtn.WithStyle(StylePrimary).WithAccessibilityLabel("Run my workflow")
-
-	// Marshal to JSON
-	jsonData, err := json.Marshal(workflowBtn)
+	jsonData, err := json.Marshal(workflowButton)
 	assert.NoError(t, err)
 
-	// Unmarshal back
 	var unmarshalled WorkflowButtonBlockElement
 	err = json.Unmarshal(jsonData, &unmarshalled)
 	assert.NoError(t, err)
 
-	assert.Equal(t, workflowBtn.Type, unmarshalled.Type)
-	assert.Equal(t, workflowBtn.ActionID, unmarshalled.ActionID)
-	assert.Equal(t, workflowBtn.Style, unmarshalled.Style)
-	assert.Equal(t, workflowBtn.AccessibilityLabel, unmarshalled.AccessibilityLabel)
-	assert.Equal(t, workflowBtn.Text.Text, unmarshalled.Text.Text)
-	assert.Equal(t, workflowBtn.Workflow.Trigger.URL, unmarshalled.Workflow.Trigger.URL)
-	assert.Equal(t, len(workflowBtn.Workflow.Trigger.CustomizableInputParameters), len(unmarshalled.Workflow.Trigger.CustomizableInputParameters))
+	assert.Equal(t, "workflow_button", string(unmarshalled.Type))
+	assert.Equal(t, "start_workflow", unmarshalled.ActionID)
+	assert.Equal(t, "Start Process", unmarshalled.Text.Text)
+	assert.Equal(t, StylePrimary, unmarshalled.Style)
+	assert.Equal(t, "Start the approval process", unmarshalled.AccessibilityLabel)
+	assert.NotNil(t, unmarshalled.Workflow)
+	assert.Equal(t, "https://slack.com/shortcuts/Ft123456/abc789", unmarshalled.Workflow.Trigger.URL)
+	assert.Equal(t, 2, len(unmarshalled.Workflow.Trigger.CustomizableInputParameters))
+	assert.Equal(t, "user_id", unmarshalled.Workflow.Trigger.CustomizableInputParameters[0].Name)
+	assert.Equal(t, "U123456", unmarshalled.Workflow.Trigger.CustomizableInputParameters[0].Value)
+}
+
+func TestWorkflowButtonMinimalConfiguration(t *testing.T) {
+	// Test with minimal required fields only
+	btnText := NewTextBlockObject("plain_text", "Simple Workflow", false, false)
+	workflow := &Workflow{
+		Trigger: &WorkflowTrigger{
+			URL: "https://slack.com/shortcuts/Ft123456/minimal",
+		},
+	}
+	workflowButton := NewWorkflowButtonBlockElement(btnText, workflow, "minimal_workflow")
+
+	// Verify no optional fields are set
+	assert.Equal(t, Style(""), workflowButton.Style)
+	assert.Equal(t, "", workflowButton.AccessibilityLabel)
+	assert.Nil(t, workflowButton.Workflow.Trigger.CustomizableInputParameters)
+
+	// Ensure it marshals correctly without optional fields
+	jsonData, err := json.Marshal(workflowButton)
+	assert.NoError(t, err)
+
+	// Check that optional fields are omitted from JSON
+	jsonStr := string(jsonData)
+	assert.NotContains(t, jsonStr, "style")
+	assert.NotContains(t, jsonStr, "accessibility_label")
+	assert.NotContains(t, jsonStr, "customizable_input_parameters")
 }

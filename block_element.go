@@ -248,6 +248,7 @@ type SelectBlockElement struct {
 	Filter                       *SelectBlockElementFilter `json:"filter,omitempty"`
 	MinQueryLength               *int                      `json:"min_query_length,omitempty"`
 	Confirm                      *ConfirmationBlockObject  `json:"confirm,omitempty"`
+	FocusOnLoad                  bool                      `json:"focus_on_load,omitempty"`
 }
 
 // SelectBlockElementFilter allows to filter select element conversation options by type.
@@ -335,9 +336,11 @@ type MultiSelectBlockElement struct {
 	InitialUsers         []string                  `json:"initial_users,omitempty"`
 	InitialConversations []string                  `json:"initial_conversations,omitempty"`
 	InitialChannels      []string                  `json:"initial_channels,omitempty"`
+	Filter               *SelectBlockElementFilter `json:"filter,omitempty"`
 	MinQueryLength       *int                      `json:"min_query_length,omitempty"`
 	MaxSelectedItems     *int                      `json:"max_selected_items,omitempty"`
 	Confirm              *ConfirmationBlockObject  `json:"confirm,omitempty"`
+	FocusOnLoad          bool                      `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -458,6 +461,7 @@ type DatePickerBlockElement struct {
 	Placeholder *TextBlockObject         `json:"placeholder,omitempty"`
 	InitialDate string                   `json:"initial_date,omitempty"`
 	Confirm     *ConfirmationBlockObject `json:"confirm,omitempty"`
+	FocusOnLoad bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -485,6 +489,7 @@ type TimePickerBlockElement struct {
 	InitialTime string                   `json:"initial_time,omitempty"`
 	Confirm     *ConfirmationBlockObject `json:"confirm,omitempty"`
 	Timezone    string                   `json:"timezone,omitempty"`
+	FocusOnLoad bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -500,14 +505,13 @@ func NewTimePickerBlockElement(actionID string) *TimePickerBlockElement {
 	}
 }
 
-// DateTimePickerBlockElement defines an element which lets users easily select
-// a date and time from a nice UI. This element can only be used inside modals.
-//
-// More Information: https://api.slack.com/reference/block-kit/block-elements#datetimepicker
+// DateTimePickerBlockElement defines an element that allows the selection of both
+// a date and a time of day formatted as a UNIX timestamp.
+// More Information: https://api.slack.com/reference/messaging/block-elements#datetimepicker
 type DateTimePickerBlockElement struct {
 	Type            MessageElementType       `json:"type"`
 	ActionID        string                   `json:"action_id,omitempty"`
-	InitialDateTime *JSONTime                `json:"initial_date_time,omitempty"`
+	InitialDateTime int64                    `json:"initial_date_time,omitempty"`
 	Confirm         *ConfirmationBlockObject `json:"confirm,omitempty"`
 	FocusOnLoad     bool                     `json:"focus_on_load,omitempty"`
 }
@@ -517,7 +521,7 @@ func (s DateTimePickerBlockElement) ElementType() MessageElementType {
 	return s.Type
 }
 
-// NewDateTimePickerBlockElement returns an instance of a date picker element
+// NewDatePickerBlockElement returns an instance of a datetime picker element
 func NewDateTimePickerBlockElement(actionID string) *DateTimePickerBlockElement {
 	return &DateTimePickerBlockElement{
 		Type:     METDatetimepicker,
@@ -525,8 +529,9 @@ func NewDateTimePickerBlockElement(actionID string) *DateTimePickerBlockElement 
 	}
 }
 
-// EmailTextInputBlockElement creates a field where a user can enter an email.
-// Email input elements are currently only available in modals.
+// EmailTextInputBlockElement creates a field where a user can enter email
+// data.
+// email-text-input elements are currently only available in modals.
 //
 // More Information: https://api.slack.com/reference/block-kit/block-elements#email
 type EmailTextInputBlockElement struct {
@@ -544,10 +549,39 @@ func (s EmailTextInputBlockElement) ElementType() MessageElementType {
 }
 
 // NewEmailTextInputBlockElement returns an instance of a plain-text input
-// element that only accepts email addresses.
+// element
 func NewEmailTextInputBlockElement(placeholder *TextBlockObject, actionID string) *EmailTextInputBlockElement {
 	return &EmailTextInputBlockElement{
 		Type:        METEmailTextInput,
+		ActionID:    actionID,
+		Placeholder: placeholder,
+	}
+}
+
+// URLTextInputBlockElement creates a field where a user can enter url data.
+//
+// url-text-input elements are currently only available in modals.
+//
+// More Information: https://api.slack.com/reference/block-kit/block-elements#url
+type URLTextInputBlockElement struct {
+	Type                 MessageElementType    `json:"type"`
+	ActionID             string                `json:"action_id,omitempty"`
+	Placeholder          *TextBlockObject      `json:"placeholder,omitempty"`
+	InitialValue         string                `json:"initial_value,omitempty"`
+	DispatchActionConfig *DispatchActionConfig `json:"dispatch_action_config,omitempty"`
+	FocusOnLoad          bool                  `json:"focus_on_load,omitempty"`
+}
+
+// ElementType returns the type of the Element
+func (s URLTextInputBlockElement) ElementType() MessageElementType {
+	return s.Type
+}
+
+// NewURLTextInputBlockElement returns an instance of a plain-text input
+// element
+func NewURLTextInputBlockElement(placeholder *TextBlockObject, actionID string) *URLTextInputBlockElement {
+	return &URLTextInputBlockElement{
+		Type:        METURLTextInput,
 		ActionID:    actionID,
 		Placeholder: placeholder,
 	}
@@ -567,6 +601,7 @@ type PlainTextInputBlockElement struct {
 	MinLength            int                   `json:"min_length,omitempty"`
 	MaxLength            int                   `json:"max_length,omitempty"`
 	DispatchActionConfig *DispatchActionConfig `json:"dispatch_action_config,omitempty"`
+	FocusOnLoad          bool                  `json:"focus_on_load,omitempty"`
 }
 
 type DispatchActionConfig struct {
@@ -644,34 +679,6 @@ func NewRichTextInputBlockElement(placeholder *TextBlockObject, actionID string)
 	}
 }
 
-// URLTextInputBlockElement creates a field where a user can enter a URL.
-// URL input elements are currently only available in modals.
-//
-// More Information: https://api.slack.com/reference/block-kit/block-elements#url
-type URLTextInputBlockElement struct {
-	Type                 MessageElementType    `json:"type"`
-	ActionID             string                `json:"action_id,omitempty"`
-	Placeholder          *TextBlockObject      `json:"placeholder,omitempty"`
-	InitialValue         string                `json:"initial_value,omitempty"`
-	DispatchActionConfig *DispatchActionConfig `json:"dispatch_action_config,omitempty"`
-	FocusOnLoad          bool                  `json:"focus_on_load,omitempty"`
-}
-
-// ElementType returns the type of the Element
-func (s URLTextInputBlockElement) ElementType() MessageElementType {
-	return s.Type
-}
-
-// NewURLTextInputBlockElement returns an instance of a plain-text input
-// element
-func NewURLTextInputBlockElement(placeholder *TextBlockObject, actionID string) *URLTextInputBlockElement {
-	return &URLTextInputBlockElement{
-		Type:        METURLTextInput,
-		ActionID:    actionID,
-		Placeholder: placeholder,
-	}
-}
-
 // CheckboxGroupsBlockElement defines an element which allows users to choose
 // one or more items from a list of possible options.
 //
@@ -682,6 +689,7 @@ type CheckboxGroupsBlockElement struct {
 	Options        []*OptionBlockObject     `json:"options"`
 	InitialOptions []*OptionBlockObject     `json:"initial_options,omitempty"`
 	Confirm        *ConfirmationBlockObject `json:"confirm,omitempty"`
+	FocusOnLoad    bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -708,6 +716,7 @@ type RadioButtonsBlockElement struct {
 	Options       []*OptionBlockObject     `json:"options"`
 	InitialOption *OptionBlockObject       `json:"initial_option,omitempty"`
 	Confirm       *ConfirmationBlockObject `json:"confirm,omitempty"`
+	FocusOnLoad   bool                     `json:"focus_on_load,omitempty"`
 }
 
 // ElementType returns the type of the Element
@@ -928,31 +937,31 @@ func (s *IconButtonBlockElement) WithVisibleToUserIDs(userIDs []string) *IconBut
 	return s
 }
 
-// CustomizableInputParameter defines a customizable input parameter for a workflow trigger
-type CustomizableInputParameter struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
-
-// WorkflowTrigger defines a workflow trigger for a workflow button
+// WorkflowTrigger defines the workflow to be executed when a workflow button is clicked
 type WorkflowTrigger struct {
 	URL                         string                       `json:"url"`
 	CustomizableInputParameters []CustomizableInputParameter `json:"customizable_input_parameters,omitempty"`
 }
 
-// Workflow defines a workflow for a workflow button
+// CustomizableInputParameter defines a parameter that can be passed to a workflow
+type CustomizableInputParameter struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// Workflow contains the trigger details for a workflow button
 type Workflow struct {
 	Trigger *WorkflowTrigger `json:"trigger"`
 }
 
-// WorkflowButtonBlockElement defines an element that triggers a workflow
+// WorkflowButtonBlockElement defines an element that triggers a workflow when clicked
 //
-// More Information: https://api.slack.com/reference/block-kit/block-elements#workflow_button
+// More Information: https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element
 type WorkflowButtonBlockElement struct {
 	Type               MessageElementType `json:"type"`
 	Text               *TextBlockObject   `json:"text"`
 	Workflow           *Workflow          `json:"workflow"`
-	ActionID           string             `json:"action_id,omitempty"`
+	ActionID           string             `json:"action_id"`
 	Style              Style              `json:"style,omitempty"`
 	AccessibilityLabel string             `json:"accessibility_label,omitempty"`
 }
@@ -972,13 +981,13 @@ func NewWorkflowButtonBlockElement(text *TextBlockObject, workflow *Workflow, ac
 	}
 }
 
-// WithStyle adds styling to the workflow button element
+// WithStyle sets the style for the workflow button element
 func (s *WorkflowButtonBlockElement) WithStyle(style Style) *WorkflowButtonBlockElement {
 	s.Style = style
 	return s
 }
 
-// WithAccessibilityLabel adds an accessibility label to the workflow button element
+// WithAccessibilityLabel sets the accessibility label for the workflow button element
 func (s *WorkflowButtonBlockElement) WithAccessibilityLabel(label string) *WorkflowButtonBlockElement {
 	s.AccessibilityLabel = label
 	return s

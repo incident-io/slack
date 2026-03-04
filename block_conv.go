@@ -65,6 +65,8 @@ func (b *Blocks) UnmarshalJSON(data []byte) error {
 			block = &ImageBlock{}
 		case "input":
 			block = &InputBlock{}
+		case "markdown":
+			block = &MarkdownBlock{}
 		case "rich_text":
 			block = &RichTextBlock{}
 		case "rich_text_input":
@@ -75,6 +77,12 @@ func (b *Blocks) UnmarshalJSON(data []byte) error {
 			block = &CallBlock{}
 		case "video":
 			block = &VideoBlock{}
+		case "table":
+			block = &TableBlock{}
+		case "task_card":
+			block = &TaskCardBlock{}
+		case "plan":
+			block = &PlanBlock{}
 		default:
 			block = &UnknownBlock{}
 		}
@@ -247,7 +255,6 @@ func (b *BlockElements) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON implements the Marshaller interface for Accessory so that any JSON
 // marshalling is delegated and proper type determination can be made before marshal
-// Note: datetimepicker is not supported in Accessory
 func (a *Accessory) MarshalJSON() ([]byte, error) {
 	bytes, err := json.Marshal(toBlockElement(a))
 	if err != nil {
@@ -259,6 +266,7 @@ func (a *Accessory) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements the Unmarshaller interface for Accessory, so that any JSON
 // unmarshalling is delegated and proper type determination can be made before unmarshal
+// Note: datetimepicker is not supported in Accessory
 func (a *Accessory) UnmarshalJSON(data []byte) error {
 	var r json.RawMessage
 
